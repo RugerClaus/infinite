@@ -9,7 +9,7 @@ pygame.display.set_caption("Ass")
 run = True
 
 def game_over():
-    global score,speed,game_active,game_over_font,quit_text_x,quit_text_y,try_again_text_x,try_again_text_y
+    global score,speed,game_active,game_over_font,quit_text_x,quit_text_y,try_again_text_x,try_again_text_y,player_rect
 
     try_again_surface = pygame.Surface((200,50))
     try_again_text = button_font.render("Try Again",True,'white')
@@ -38,6 +38,7 @@ def game_over():
                     snail_rect.left = 800
                     speed = 0
                     score = 0
+                    player_x = 20
                     main()
                 if quit_rect.collidepoint(mousepos):
                     pygame.quit()
@@ -81,6 +82,7 @@ def game_over():
 def main():
     global game_active,score,player_gravity,player_x,speed
     while run:
+        milli = pygame.time.get_ticks()
 
         mousepos = pygame.mouse.get_pos()
 
@@ -89,12 +91,12 @@ def main():
                 pygame.quit()
                 exit()
             if game_active:
-                if event.type == pygame.KEYDOWN:
-                    if event.key == pygame.K_d and speed <= 0:
+                if event.type == pygame.MOUSEBUTTONDOWN:
+                    if mousepos[0] > player_x:
                         speed = 2
-                    if event.key == pygame.K_a and speed == 2:
+                    if mousepos[0] < player_x:
                         speed = -2
-                    if event.key == pygame.K_SPACE and player_rect.bottom == 300:
+                    if mousepos[1] > player_rect.top and player_rect.top > 0:
                         player_gravity = -8.5
             else:
                 if event.type == pygame.KEYDOWN and event.key == pygame.K_SPACE:
@@ -105,19 +107,20 @@ def main():
                     score = 0
                     
         if game_active:
+            screen.fill("black")
             score_surface = font.render(f'Score: {score}',True,(64,64,64))
             screen.blit(sky_surface,(0,0))
             screen.blit(ground_surface,(0,300))
             screen.blit(score_surface,(650,5))
 
-            snail_rect.x -= 3
+            snail_rect.x -= 5
             if snail_rect.right <= 0: snail_rect.left = 800
             screen.blit(snail_surface,snail_rect)
 
             player_gravity += 0.2
             player_rect.bottom += player_gravity
             screen.blit(player_surface,player_rect)
-
+            
             player_x += speed
             player_rect.x = player_x
             if player_rect.bottom > 299: 
@@ -130,7 +133,7 @@ def main():
             if player_rect.right > 800:
                 player_rect.right = 800
                 speed = -2
-                player_gravity = -8.5
+                player_gravity = -10
             if snail_rect.colliderect(player_rect):
                 game_active = False
 
@@ -139,6 +142,15 @@ def main():
                 score += 1
             if snail_rect.left > player_rect.right:
                 passed_snail = False
+            if milli > 3000:
+                screen.blit(tree_1_surface,tree_1_rect)
+                tree_1_rect.x -= scroll_speed
+                if tree_1_rect.left < -100:
+                    tree_1_rect.right = 1000
+                screen.blit(tree_2_surface,tree_2_rect)
+                tree_2_rect.x -= scroll_speed
+                if tree_2_rect.left < -100:
+                    tree_2_rect.right = 1100
         else:
             pygame.display.flip()
             game_over()

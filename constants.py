@@ -7,10 +7,11 @@ enemy_y = 265
 enemy_x = 700
 speed = 0
 player_x = 20
-player_y = 215
+player_y = 300
 player_y_velocity = 0
 player_gravity = 0
 screen = pygame.display.set_mode((800,400))
+
 
 game_active = True
 
@@ -30,10 +31,11 @@ snail_two_surface = pygame.image.load('graphics/snail/snail2.png').convert_alpha
 player_surface = pygame.image.load('graphics/Player/player_walk_1.png').convert_alpha()
 tree_1_surface = pygame.image.load('graphics/Tree/tree1.png').convert_alpha()
 tree_2_surface = pygame.image.load('graphics/Tree/tree2.png').convert_alpha()
-tree_1_rect = tree_1_surface.get_rect()
-tree_2_rect = tree_2_surface.get_rect()
+tree_1_rect = tree_1_surface.get_rect(bottomright = (2000,300))
+tree_2_rect = tree_2_surface.get_rect(bottomright = (3000,300))
 ground_rect = ground_surface.get_rect()
 sky_rect = sky_surface.get_rect()
 snail_rect = snail_surface.get_rect(bottomright = (800,300))
-player_rect = player_surface.get_rect(topleft = (player_x,player_y))
+player_rect = player_surface.get_rect(bottomleft = (player_x,player_y))
 passed_snail = False
+scroll_speed = 3.5

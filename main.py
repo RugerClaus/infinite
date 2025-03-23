@@ -1,6 +1,7 @@
 import pygame
 from sys import exit
 from constants import *
+from magic import tree_magic, enemy_magic
 
 pygame.init()
 
@@ -20,10 +21,10 @@ def game_over():
     game_over_text = game_over_font.render("Game Over!",True,(255,255,255))
 
     
-    menu = True
+    gameover = True
 
 
-    while menu:
+    while gameover:
 
         mousepos = pygame.mouse.get_pos()           
 
@@ -82,8 +83,6 @@ def main():
     global game_active,score,player_gravity,player_x,speed
     while run:
 
-        mousepos = pygame.mouse.get_pos()
-
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 pygame.quit()
@@ -110,6 +109,17 @@ def main():
             screen.blit(ground_surface,(0,300))
             screen.blit(score_surface,(650,5))
 
+            tree_1_rect.x -= 2
+            tree_2_rect.x -= 2
+            tree_1_rect.bottom = 300
+            tree_2_rect.bottom = 300
+            if tree_1_rect.right <= 0: 
+                tree_magic(tree_1_rect)
+            if tree_2_rect.right <= 0: 
+                tree_magic(tree_2_rect)
+            screen.blit(tree_1_surface,tree_1_rect)
+            screen.blit(tree_2_surface,tree_2_rect)
+
             snail_rect.x -= 3
             if snail_rect.right <= 0: snail_rect.left = 800
             screen.blit(snail_surface,snail_rect)
@@ -117,6 +127,17 @@ def main():
             player_gravity += 0.2
             player_rect.bottom += player_gravity
             screen.blit(player_surface,player_rect)
+
+            tree_1_rect.x -= 2
+            tree_2_rect.x -= 2
+            tree_1_rect.bottom = 300
+            tree_2_rect.bottom = 300
+            if tree_1_rect.right <= 0: 
+                tree_magic(tree_1_rect)
+            if tree_2_rect.right <= 0: 
+                tree_magic(tree_2_rect)
+            screen.blit(tree_1_surface,tree_1_rect)
+            screen.blit(tree_2_surface,tree_2_rect)
 
             player_x += speed
             player_rect.x = player_x

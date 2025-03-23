@@ -32,6 +32,8 @@ tree_1_surface = pygame.image.load('graphics/Tree/tree1.png').convert_alpha()
 tree_2_surface = pygame.image.load('graphics/Tree/tree2.png').convert_alpha()
 tree_1_rect = tree_1_surface.get_rect()
 tree_2_rect = tree_2_surface.get_rect()
+tree_1_rect.x = 2000
+tree_2_rect.x = 2500
 ground_rect = ground_surface.get_rect()
 sky_rect = sky_surface.get_rect()
 snail_rect = snail_surface.get_rect(bottomright = (800,300))

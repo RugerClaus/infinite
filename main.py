@@ -1,20 +1,19 @@
 import pygame
 from magic import tree_magic
-from constants import *
 
 pygame.init()
 pygame.font.init()
 
-pygame.display.set_caption("Ass")
+pygame.display.set_caption("PITS: Pie In The Sky")
 screen = pygame.display.set_mode((800,400))
 clock = pygame.time.Clock()
 
 score = 0
 enemy_y = 265
-enemy_x = 700
+enemy_x = 800
 speed = 0
 player_x = 20
-player_y = 215
+player_y = 300
 player_y_velocity = 0
 player_gravity = 0
 
@@ -79,128 +78,99 @@ quit_text_x = 70
 quit_text_y = 10
 try_again_text_x = 35
 try_again_text_y = 10
+menu = True
 
 
 
 
 def start():
-    global game_active,player_x,play_text,quit_text,clock,player_rect,quit_rect
+    global game_active,player_x,play_text,quit_text,clock,player_rect,quit_rect,speed,player_gravity
 
 
 
     run = True
     while run:
-        clock.tick(60)
-        mousepos = pygame.mouse.get_pos()           
-
-        for event in pygame.event.get():
-            if event.type == pygame.QUIT:
-                pygame.quit()
-                exit()
-            if event.type == pygame.MOUSEBUTTONDOWN:
-                if play_rect.collidepoint(mousepos):
-                    game_active = True
-                    game()
-                    pygame.display.flip()
-                if quit_rect.collidepoint(mousepos):
-                    pygame.quit()
-                    exit()
-                    
-            if event.type == pygame.MOUSEMOTION:
-                if play_rect.collidepoint(mousepos):
-                    play_text = font.render("Play",True,'black')
-                    screen.blit(play_surface,play_rect)
-                    play_surface.blit(play_text, (play_text_x,play_text_y))
-                else:
-                    play_text = font.render("Play",True,'white')
-                    screen.blit(play_surface,play_rect)
-                    play_surface.blit(play_text, (play_text_x,play_text_y))
-                if quit_rect.collidepoint(mousepos):
-                    quit_text = font.render("Quit",True,'black')
-                    screen.blit(quit_surface,quit_rect)
-                    quit_surface.blit(quit_text,(quit_text_x,quit_text_y))
-                else:
-                    quit_text = font.render("Quit",True,'white')
-                    screen.blit(quit_surface,quit_rect)
-                    quit_surface.blit(quit_text, (quit_text_x,quit_text_y))
-
-        screen.fill((94,129,162))
-        screen.blit(game_over_text,(175,50))
-        screen.blit(play_surface,play_rect)
-        screen.blit(quit_surface,quit_rect)
-        play_surface.fill("darkblue")
-        quit_surface.fill("darkblue")
-        play_surface.blit(play_text,(play_text_x,play_text_y))
-        quit_surface.blit(quit_text,(quit_text_x,quit_text_y))
-
-    pygame.display.flip()
-
-def game():
-    
-    global game_active,player_gravity,score,sky_surface,ground_surface,score_surface,tree_1_rect,tree_2_rect,tree_1_surface,tree_2_surface,snail_rect,snail_surface,player_rect,player_surface,player_x,running,speed,clock,screen
-
-    while game_active:
-
-        running = True
-
+        if menu == False:
+            break
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 pygame.quit()
                 exit()
             if event.type == pygame.KEYDOWN:
-                if event.key == pygame.K_d and speed <= 0:
+                if event.key == pygame.K_1:
+                    game_active = True
+                    game()
+                if event.key == pygame.K_d and speed <= 0 and game_active == True:
                     speed = 2
-                if event.key == pygame.K_a and speed == 2:
+                if event.key == pygame.K_a and speed == 2 and game_active == True:
                     speed = -2
-                if event.key == pygame.K_SPACE and player_rect.bottom == 300:
+                if event.key == pygame.K_SPACE and player_rect.bottom == 300 and game_active == True:
                     player_gravity = -8.5
+        clock.tick(60)
 
-            score_surface = font.render(f'Score: {score}',True,(64,64,64))
-            screen.blit(sky_surface,(0,0))
-            screen.blit(ground_surface,(0,300))
-            screen.blit(score_surface,(650,5))
+        pygame.display.flip()
 
-            tree_1_rect.x -= 2
-            tree_2_rect.x -= 2
-            tree_1_rect.bottom = 300
-            tree_2_rect.bottom = 300
-            if tree_1_rect.right <= 0: 
-                tree_magic(tree_1_rect)
-            if tree_2_rect.right <= 0: 
-                tree_magic(tree_2_rect)
+def game():
+    
+    global menu,game_active,player_gravity,score,sky_surface,ground_surface,score_surface,tree_1_rect,tree_2_rect,tree_1_surface,tree_2_surface,snail_rect,snail_surface,player_rect,player_surface,player_x,running,speed,clock,screen,speed
+
+    menu = False
+    
+
+    while game_active:
+        
+        running = True
+
+
+        score_surface = font.render(f'Score: {score}',True,(64,64,64))
+        screen.blit(sky_surface,(0,0))
+        screen.blit(ground_surface,(0,300))
+        screen.blit(score_surface,(650,5))
+
+        tree_1_rect.x -= 2
+        tree_2_rect.x -= 2
+        tree_1_rect.bottom = 300
+        tree_2_rect.bottom = 300
+        if tree_1_rect.right <= 0: 
+            tree_magic(tree_1_rect)
+        if tree_2_rect.right <= 0: 
+            tree_magic(tree_2_rect)
             screen.blit(tree_1_surface,tree_1_rect)
             screen.blit(tree_2_surface,tree_2_rect)
 
-            snail_rect.x -= 3
-            if snail_rect.right <= 0: snail_rect.left = 800
+        snail_rect.x -= 3
+        if snail_rect.right <= 0: 
+            snail_rect.left = 800
             screen.blit(snail_surface,snail_rect)
 
-            player_gravity += 0.2
-            player_rect.bottom += player_gravity
-            screen.blit(player_surface,player_rect)
+        player_gravity += 0.2
+        player_rect.bottom += player_gravity
+        screen.blit(player_surface,player_rect)
 
-            player_x += speed
-            player_rect.x = player_x
-            if player_rect.bottom > 299: 
-                player_rect.bottom = 300
-                player_gravity = 0
-            if player_rect.left < 0:
-                player_rect.left = 0
-                speed = 2
-                player_gravity = -8.5
-            if player_rect.right > 800:
-                player_rect.right = 800
-                speed = -2
-                player_gravity = -8.5
-            if snail_rect.colliderect(player_rect):
-                game_active = False
+        player_x += speed
+        player_rect.x = player_x
+        if player_rect.bottom > 299: 
+            player_rect.bottom = 300
+            player_gravity = 0
+        if player_rect.left < 0:
+            player_rect.left = 0
+            speed = 2
+            player_gravity = -8.5
+        if player_rect.right > 800:
+            player_rect.right = 800
+            speed = -2
+            player_gravity = -8.5
+        if snail_rect.colliderect(player_rect):
+            game_active = False
 
 
-            if player_rect.right > snail_rect.left and not passed_snail:
-                passed_snail = True
-                score += 1
-            if snail_rect.left > player_rect.right:
-                passed_snail = False
+        if player_rect.right > snail_rect.left and not passed_snail:
+            passed_snail = True
+            score += 1
+        if snail_rect.left > player_rect.right:
+            passed_snail = False
+        game_active = True
+    clock.tick(60)
     pygame.display.flip()
 
 def game_over():

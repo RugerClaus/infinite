@@ -288,7 +288,7 @@ def main():
         screen.blit(snail_surface,snail_rect)
 
         player_gravity += 0.2
-        player_rect.bottom += player_gravity
+        player_rect.bottom += player_gravity #creates the gravity effect
         screen.blit(player_surface,player_rect)
 
         player_logic()

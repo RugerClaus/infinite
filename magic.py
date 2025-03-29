@@ -2,7 +2,7 @@ from random import randint
 
 
 def tree_magic(tree_rect):
-    position = randint(900,1200)
+    position = randint(900,1400)
     tree_rect.x = position
     pass 
 

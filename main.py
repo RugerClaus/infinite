@@ -234,6 +234,12 @@ def player_logic():
         player_gravity -= 7.5
         player_gravity += 2
     if player_rect.top >= 400:
+        snail_rect.left = 800
+        speed = 0
+        score = 0
+        player_x = 20
+        tree_1_rect.x = 1000
+        tree_2_rect.x = 1500
         game_over()
         
 
@@ -266,16 +272,16 @@ def main():
         screen.blit(ground_surface,(0,300))
         screen.blit(score_surface,(650,5))
 
-        # tree_1_rect.x -= 2
-        # tree_2_rect.x -= 2
-        # tree_1_rect.bottom = 300
-        # tree_2_rect.bottom = 300
-        # if tree_1_rect.right <= 0: 
-        #     tree_magic(tree_1_rect)
-        # if tree_2_rect.right <= 0: 
-        #     tree_magic(tree_2_rect)
-        # screen.blit(tree_1_surface,tree_1_rect)
-        # screen.blit(tree_2_surface,tree_2_rect)
+        tree_1_rect.x -= 1
+        tree_2_rect.x -= 1
+        tree_1_rect.bottom = 300
+        tree_2_rect.bottom = 300
+        if tree_1_rect.right <= 0: 
+            tree_magic(tree_1_rect)
+        if tree_2_rect.right <= 0: 
+            tree_magic(tree_2_rect)
+        screen.blit(tree_1_surface,tree_1_rect)
+        screen.blit(tree_2_surface,tree_2_rect)
 
         snail_rect.x -= 3
         if snail_rect.right <= 0: snail_rect.left = 800

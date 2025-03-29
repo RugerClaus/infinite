@@ -182,6 +182,22 @@ def pause_game():
                     options_button_text = pause_font.render("Options",True,'lightblue')
                     screen.blit(options_surface,options_button_rect)
                     screen.blit(options_button_text,options_button_text_rect)
+                if quittomenu_button_rect.collidepoint(mousepos):
+                    quittomenu_button_text = pause_font.render("Menu",True,'white')
+                    screen.blit(quittomenu_surface,quittomenu_button_rect)
+                    screen.blit(quittomenu_button_text,quittomenu_button_text_rect)
+                else:
+                    quittomenu_button_text = pause_font.render("Menu",True,'lightblue')
+                    screen.blit(quittomenu_surface,quittomenu_button_rect)
+                    screen.blit(quittomenu_button_text,quittomenu_button_text_rect)
+                if quittodesktop_button_rect.collidepoint(mousepos):
+                    quittodesktop_button_text = pause_font.render("Exit",True,'white')
+                    screen.blit(quittodesktop_surface,quittodesktop_button_rect)
+                    screen.blit(quittodesktop_button_text,quittodesktop_button_text_rect)
+                else:
+                    quittodesktop_button_text = pause_font.render("Exit",True,'lightblue')
+                    screen.blit(quittodesktop_surface,quittodesktop_button_rect)
+                    screen.blit(quittodesktop_button_text,quittodesktop_button_text_rect)
                 
 
         screen.blit(resume_surface,resume_button_rect)
@@ -215,7 +231,7 @@ def player_logic():
         alive = False
         snail_rect.x = 4000
         speed = 0
-        player_gravity -= 8.5
+        player_gravity -= 7.5
         player_gravity += 2
     if player_rect.top >= 400:
         game_over()

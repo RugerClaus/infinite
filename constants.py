@@ -13,6 +13,7 @@ player_gravity = 0
 screen = pygame.display.set_mode((800,400))
 tryagaincount = 0
 pausebuttonsize = (100,50)
+alive = True
 
 game_active = False
 paused = False
@@ -20,7 +21,7 @@ paused = False
 clock = pygame.time.Clock()
 
 font = pygame.font.Font('font/Pixeltype.ttf',50)
-pause_font = pygame.font.Font('font/Pixeltype.ttf',30)
+pause_font = pygame.font.Font('font/Pixeltype.ttf',40)
 button_font = pygame.font.Font('font/Roboto-Black.ttf',30)
 game_over_font = pygame.font.Font('font/gameover.ttf',50)
 quit_text_x = 70

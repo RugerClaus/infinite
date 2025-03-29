@@ -13,7 +13,7 @@ def shutdown():
     exit()
 
 def game_over():
-    global score,speed,game_active,game_over_font,main,player_x,tryagaincount
+    global score,speed,game_active,game_over_font,main,player_x,tryagaincount,player_gravity,alive
 
     try_again_surface = pygame.Surface((200,50))
     try_again_text = button_font.render("Try Again",True,'white')
@@ -44,12 +44,14 @@ def game_over():
             if event.type == pygame.MOUSEBUTTONDOWN:
                 if try_again_rect.collidepoint(mousepos):
                     tryagaincount += 1
-                    print(f"try again count: {tryagaincount}")
+                    print(f"Try Again Count: {tryagaincount}")
                     game_active = True
+                    alive = True
                     snail_rect.left = 800
                     speed = 0
                     score = 0
                     player_x = 20
+                    player_gravity = 0
                     main()
                 if quittodesktop_rect.collidepoint(mousepos):
                     shutdown()
@@ -92,7 +94,7 @@ def game_over():
                     screen.blit(quittodesktop_surface,quittodesktop_rect)
                     quit_surface.blit(quittodesktop_text, quittodesktop_text_rect)
                     pygame.display.flip()
-        screen.fill((94,129,162))
+
         try_again_surface.fill("darkblue")
         quit_surface.fill("darkblue")
         quittodesktop_surface.fill("darkblue")
@@ -114,25 +116,25 @@ def pause_game():
     #resume button
     resume_surface = pygame.Surface(pausebuttonsize)
     resume_button_rect = resume_surface.get_rect(center = (100,50))
-    resume_button_text = pause_font.render("Resume",True,'white')
+    resume_button_text = pause_font.render("Resume",True,'lightblue')
     resume_button_text_rect = resume_button_text.get_rect(center = resume_button_rect.center)
 
     #options button
     options_surface = pygame.Surface(pausebuttonsize)
     options_button_rect = options_surface.get_rect(center = (100,125))
-    options_button_text = pause_font.render("Options",True,'white')
+    options_button_text = pause_font.render("Options",True,'lightblue')
     options_button_text_rect = options_button_text.get_rect(center = options_button_rect.center)   
 
     #main menu button
     quittomenu_surface = pygame.Surface(pausebuttonsize)
     quittomenu_button_rect = options_surface.get_rect(center = (100,200))
-    quittomenu_button_text = pause_font.render("Menu",True,'white')
+    quittomenu_button_text = pause_font.render("Menu",True,'lightblue')
     quittomenu_button_text_rect = quittomenu_button_text.get_rect(center = quittomenu_button_rect.center)
 
     #exit button
     quittodesktop_surface = pygame.Surface(pausebuttonsize)
     quittodesktop_button_rect = quittodesktop_surface.get_rect(center = (100,275))
-    quittodesktop_button_text = pause_font.render("Exit",True,'white')
+    quittodesktop_button_text = pause_font.render("Exit",True,'lightblue')
     quittodesktop_button_text_rect = quittodesktop_button_text.get_rect(center = quittodesktop_button_rect.center)   
 
     paused = True
@@ -163,6 +165,24 @@ def pause_game():
                     start()
                 if quittodesktop_button_rect.collidepoint(mousepos):
                     shutdown()
+            if event.type == pygame.MOUSEMOTION:
+                if resume_button_rect.collidepoint(mousepos):
+                    resume_button_text = pause_font.render("Resume",True,'white')
+                    screen.blit(resume_surface,resume_button_rect)
+                    screen.blit(resume_button_text,resume_button_text_rect)
+                else:
+                    resume_button_text = pause_font.render("Resume",True,'lightblue')
+                    screen.blit(resume_surface,resume_button_rect)
+                    screen.blit(resume_button_text,resume_button_text_rect)
+                if options_button_rect.collidepoint(mousepos):
+                    options_button_text = pause_font.render("Options",True,'white')
+                    screen.blit(options_surface,options_button_rect)
+                    screen.blit(options_button_text,options_button_text_rect)
+                else:
+                    options_button_text = pause_font.render("Options",True,'lightblue')
+                    screen.blit(options_surface,options_button_rect)
+                    screen.blit(options_button_text,options_button_text_rect)
+                
 
         screen.blit(resume_surface,resume_button_rect)
         screen.blit(resume_button_text,resume_button_text_rect)
@@ -176,11 +196,11 @@ def pause_game():
         pygame.display.flip()
 
 def player_logic():
-    global player_gravity,game_active,player_x,speed,passed_snail,score
+    global player_gravity,game_active,player_x,speed,passed_snail,score,alive
 
     player_x += speed
     player_rect.x = player_x
-    if player_rect.bottom > 299: 
+    if player_rect.bottom > 299 and alive: 
         player_rect.bottom = 300
         player_gravity = 0
     if player_rect.left < 0:
@@ -192,11 +212,14 @@ def player_logic():
         speed = -2
         player_gravity = -8.5
     if snail_rect.colliderect(player_rect):
-        snail_rect.left = 800
+        alive = False
+        snail_rect.x = 4000
         speed = 0
-        score = 0
-        player_x = 20
+        player_gravity -= 8.5
+        player_gravity += 2
+    if player_rect.top >= 400:
         game_over()
+        
 
     if player_rect.right > snail_rect.left and not passed_snail:
         passed_snail = True

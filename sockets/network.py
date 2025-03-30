@@ -3,7 +3,7 @@ import socket
 class Network():
     def __init__(self):
         self.client = socket.socket(socket.AF_INET,socket.SOCK_STREAM)
-        self.server = "199.104.120.107"
+        self.server = "192.168.86.47"
         self.port = 5555
         self.addr = (self.server,self.port)
         self.pos = self.connect()
@@ -27,5 +27,9 @@ class Network():
 
 
 n = Network()
-print(n.send("hello"))
-print(n.send("working"))
+response = n.send("100,200")  # Send valid position data
+if response:
+    print(f"Server response: {response}")
+response = n.send("")  # Send invalid data (empty string) for testing
+if response:
+    print(f"Server response: {response}")

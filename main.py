@@ -228,9 +228,10 @@ class Game():
         score_surface = self.score_font.render(f'Score: {self.score}',True,(64,64,64))
         sky_0_800_surface = pygame.image.load('graphics/Sky.png').convert_alpha()
         sky_800_1600_surface = pygame.image.load('graphics/Sky2.png').convert_alpha()
-        ground_surface = pygame.image.load('graphics/ground.png').convert_alpha()
         self.screen.blit(sky_0_800_surface,(0,0))
         self.screen.blit(sky_800_1600_surface,(800,0))
+        ground_surface = pygame.image.load('graphics/ground.png').convert_alpha()
+
         self.screen.blit(ground_surface,(0,300))
         self.screen.blit(score_surface,(650,5))
     

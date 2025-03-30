@@ -2,9 +2,9 @@ import pygame
 import random
 from sys import exit as ex
 
-#Window class
+# Window class
 class Window():
-    def __init__(self,width,height,title="Juggernot 5k"):
+    def __init__(self, width, height, title="Juggernot 5k"):
         pygame.init()
         pygame.font.init()
         self.width = width
@@ -14,9 +14,9 @@ class Window():
         self.clock = pygame.time.Clock()
         self.running = True
 
-        self.font = pygame.font.Font('font/Pixeltype.ttf',50)
-        self.button_font = pygame.font.Font('font/Roboto-Black.ttf',30)
-        self.button_fontgame_over_font = pygame.font.Font('font/gameover.ttf',50)
+        self.font = pygame.font.Font('font/Pixeltype.ttf', 50)
+        self.button_font = pygame.font.Font('font/Roboto-Black.ttf', 30)
+        self.button_fontgame_over_font = pygame.font.Font('font/gameover.ttf', 50)
 
         self.music_active = False
         self.sfx_active = False
@@ -28,32 +28,35 @@ class Window():
         button_unhovered_color = "orange"
         button_hovered_color = "white"
 
-
-        play_button = Button("Play!",500,192,125,50,self.button_font,button_unhovered_color,button_hovered_color,self.start_game)
-        options_button = Button("Options",500,384,125,50,self.button_font,button_unhovered_color,button_hovered_color,self.render_options_menu)
-        quit_button = Button("Exit",500,576,125,50,self.button_font,button_unhovered_color,button_hovered_color,self.quit_game)
+        play_button = Button("Play!", 500, 192, 125, 50, self.button_font, button_unhovered_color, button_hovered_color,
+                             self.start_game)
+        options_button = Button("Options", 500, 384, 125, 50, self.button_font, button_unhovered_color,
+                                button_hovered_color, self.render_options_menu)
+        quit_button = Button("Exit", 500, 576, 125, 50, self.button_font, button_unhovered_color, button_hovered_color,
+                             self.quit_game)
 
         self.screen.fill((255, 128, 0))
         play_button.draw(self.screen, pygame.mouse.get_pos())
-        options_button.draw(self.screen,pygame.mouse.get_pos())
+        options_button.draw(self.screen, pygame.mouse.get_pos())
         quit_button.draw(self.screen, pygame.mouse.get_pos())
 
         pygame.display.flip()
 
         # Event loop for menu screen
-        self.handle_ui_events([play_button,options_button,quit_button])
+        self.handle_ui_events([play_button, options_button, quit_button])
 
     def render_options_menu(self):
         self.window_state = 'options_menu'
         button_unhovered_color = "orange"
         button_hovered_color = "white"
 
-        #buttons
-        back_button = Button("Back",400,300,100,50,self.button_font,button_unhovered_color,button_hovered_color,self.render_main_menu)
+        # buttons
+        back_button = Button("Back", 400, 300, 100, 50, self.button_font, button_unhovered_color, button_hovered_color,
+                             self.render_main_menu)
 
         self.screen.fill((255, 128, 0))
-        back_button.draw(self.screen,pygame.mouse.get_pos())
-        
+        back_button.draw(self.screen, pygame.mouse.get_pos())
+
         pygame.display.flip()
 
         self.handle_ui_events([back_button])
@@ -69,12 +72,9 @@ class Window():
                 elif event.type == pygame.MOUSEMOTION:  # Ensure buttons update on hover
                     return  # Break the loop and refresh the buttons
 
-                    
-        
-
     def start_game(self):
         self.window_state = 'in_game'
-        game = Game(True,self.screen,self.clock,self)
+        game = Game(True, self.screen, self.clock, self)
         game.game_loop()
 
     def quit_game(self):
@@ -87,7 +87,7 @@ class Window():
             self.music_active == False
         else:
             self.music_active = True
-    
+
     def toggle_sfx(self):
         if self.sfx_active == True:
             self.sfx_active = False
@@ -96,20 +96,19 @@ class Window():
 
     def main_loop(self):
         while self.running:
-                
+
             if self.window_state == "main_menu":
                 self.render_main_menu()
             elif self.window_state == 'options_menu':
                 self.render_options_menu()
             elif self.window_state == "in_game":
                 self.start_game()
-                
 
             self.clock.tick(30)
 
 
 class Button():
-    def __init__(self,text,x,y,width,height,font,text_unhovered_color,text_hovered_color,action=None):
+    def __init__(self, text, x, y, width, height, font, text_unhovered_color, text_hovered_color, action=None):
         self.text = text
         self.x = x
         self.y = y
@@ -120,15 +119,14 @@ class Button():
         self.text_unhovered_color = text_unhovered_color
         self.text_hovered_color = text_hovered_color
         self.color = "black"
-        
 
-        self.surface = pygame.Surface((self.width,self.height))
-        self.text_surface = self.font.render(self.text,True,self.text_unhovered_color)
-        self.rect = self.surface.get_rect(center = (self.x,self.y))
+        self.surface = pygame.Surface((self.width, self.height))
+        self.text_surface = self.font.render(self.text, True, self.text_unhovered_color)
+        self.rect = self.surface.get_rect(center=(self.x, self.y))
         self.text_rect = self.text_surface.get_rect(center=self.rect.center)
 
     def draw(self, screen, mouse_pos):
-        if self.rect.collidepoint(mouse_pos):  
+        if self.rect.collidepoint(mouse_pos):
             text_color = self.text_hovered_color  # Use hovered color when mouse is over
         else:
             text_color = self.text_unhovered_color  # Use unhovered color otherwise
@@ -138,11 +136,11 @@ class Button():
         pygame.draw.rect(screen, self.color, self.rect)
         screen.blit(self.text_surface, self.text_rect)
 
-    def is_clicked(self,mouse_pos,mouse_click):
+    def is_clicked(self, mouse_pos, mouse_click):
         if self.rect.collidepoint(mouse_pos) and mouse_click:
             if self.action:
                 self.action()
-                
+
 
 class Player(pygame.sprite.Sprite):
     def __init__(self, x, y, screen, game):
@@ -196,6 +194,7 @@ class Player(pygame.sprite.Sprite):
     def draw(self):
         self.screen.blit(self.image, self.rect)
 
+
 class Game():
     def __init__(self, game_active, screen, clock, window):
         self.paused = False
@@ -207,10 +206,11 @@ class Game():
         self.window = window
         self.screen = screen
         self.player = Player(50, 700, self.screen, self)
-        
+
         # Background scrolling parameters
         self.background_x = 0  # Position of first background
         self.background_speed = 3  # Adjusted Background speed for smoother scrolling
+        self.background_scrolling = False  # Start with background not scrolling
         self.check_state()
 
     def check_state(self):
@@ -250,29 +250,38 @@ class Game():
         self.paused = not self.paused
 
     def update_background_position(self):
-        if self.player.speed != 0:  # Only move background if the player is moving
-            # Move the background to the left when player moves right (scrolling forward)
-            if self.player.speed > 0 and self.player.x > 500:
+        # Start scrolling the background only after the player reaches x = 500
+        if self.player.rect.x > 500:
+            self.background_scrolling = True  # Enable scrolling
+
+        if self.background_scrolling:
+            if self.player.speed > 0:  # Player moving right
                 self.background_x -= self.background_speed
-            # Move the background to the right when player moves left (scrolling backward)
-            elif self.player.speed < 0 and self.player.x == 500:
-                self.background_x += self.background_speed
-            
+            elif self.player.speed < 0:  # Player moving left
+                # Stop scrolling once background reaches (0, 0)
+                if self.background_x < 0:
+                    self.background_x += self.background_speed
+
+        # Reset the background to create a seamless scroll effect
+        if self.background_x <= -self.screen.get_width():
+            self.background_x = 0
 
     def render_environment(self):
-        self.update_background_position()  # Move background based on player speed
+        self.update_background_position()  # Update background position based on player speed
 
         # Sky
         sky_surface = pygame.image.load('graphics/Sky.png').convert_alpha()
 
         # Blit the two backgrounds
         self.screen.blit(sky_surface, (self.background_x, 400))
+        self.screen.blit(sky_surface, (self.background_x + self.screen.get_width(), 400))
 
         # Ground
         ground_surface = pygame.image.load('graphics/ground.png').convert_alpha()
 
         # Blit the two ground images
         self.screen.blit(ground_surface, (self.background_x, 700))
+        self.screen.blit(ground_surface, (self.background_x + self.screen.get_width(), 700))
 
         # Score
         score_surface = self.score_font.render(f'Score: {self.score}', True, (64, 64, 64))
@@ -285,7 +294,7 @@ class Game():
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_d:  # Move right
                     self.player.speed = 5  # Increase speed for smoother movement
-                elif event.key == pygame.K_a:
+                elif event.key == pygame.K_a:  # Move left
                     self.player.speed = -5  
                 elif event.key == pygame.K_SPACE:  
                     self.player.jump()
@@ -293,7 +302,7 @@ class Game():
                     self.paused = not self.paused
             if event.type == pygame.KEYUP:
                 if event.key == pygame.K_d or event.key == pygame.K_a:
-                    self.player.speed = 0
+                    self.player.speed = 0  # Stop movement when key is released
 
     def game_loop(self):
         while self.game_active:
@@ -315,6 +324,5 @@ class Game():
             pygame.display.flip()
             self.clock.tick(60)
 
-
-window = Window(1000,800,"Into the SpaceHole Version Alpha 0.0.0.0.3")
+window = Window(1000, 800, "Into the SpaceHole Version Alpha 0.0.0.0.3")
 window.main_loop()

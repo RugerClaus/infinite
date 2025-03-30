@@ -147,4 +147,3 @@ class Window:
 if __name__ == "__main__":
     window = Window(800, 600, "Game UI")
     window.main_loop()
-s

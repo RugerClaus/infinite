@@ -9,3 +9,10 @@ A 0.0.0.0.3 ---- LOG
 
 You can run, jump and the game side scrolls. Renamed this file to changelog since my stoned ass last night forgot that was a thing
 also forgot to update the version on the changelog to 0.0.0.0.2 oh well. This is 0.0.0.0.3
+
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+A 0.0.0.0.4 ---- LOG
+
+Side scrolling properly fixed for the most part, but I need to stop it from scrolling after the player has gone right a bit and then goes back. The scrolling will stop,
+but I want to find a way to integrate a coordinate system to track this and make it easier for development.

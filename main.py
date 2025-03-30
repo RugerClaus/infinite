@@ -145,23 +145,35 @@ class Button():
                 
 
 class Player(pygame.sprite.Sprite):
-    def __init__(self):
+    def __init__(self,x,y,screen):
         super().__init__()
-
+        self.x = x
+        self.y = y
         self.speed = 0
         self.gravity = 0
-        self.sprites_surfaces = [
-            pygame.image.load("graphics/Player/player_walk_1.png").convert_alpha(),
-            pygame.image.load("graphics/Player/player_walk_2.png").convert_alpha()
-        ]
-        self.x,self.y = (20,300)
-        for sprite in self.sprites_surfaces:
-            self.rect = sprite.get_rect(bottomleft=(self.x,self.y))
-    
-    def update(self):
-        for i in self.sprites:
-            pass
+        self.image = pygame.image.load("graphics/Player/player_walk_1.png").convert_alpha()
+        self.rect = self.image.get_rect()
+        self.rect.topleft = (x,y)
+        self.screen = screen
 
+    def update(self):
+        # Apply gravity
+        if self.rect.bottom < 300:  
+            self.gravity += 0.5  # Gravity increases over time
+        else:
+            self.gravity = 0  # Reset gravity when on the ground
+            self.rect.bottom = 300  # Keep the player on the ground level
+
+        # Update position based on speed and gravity
+        self.rect.x += self.speed
+        self.rect.y += self.gravity
+
+    def jump(self):
+        if self.rect.bottom == 300:  # Ensure the player is on the ground before jumping
+            self.gravity = -8.5  # Apply an upward force for jumping
+
+    def draw(self):
+        self.screen.blit(self.image, self.rect)
 
 class Game():
     def __init__(self,game_active,screen,clock,window):
@@ -173,7 +185,7 @@ class Game():
         self.clock = clock
         self.window = window
         self.screen = screen
-        self.player = Player()
+        self.player = Player(50,20,self.screen)
         self.check_state()
 
     def check_state(self):
@@ -214,9 +226,11 @@ class Game():
 
     def render_environment(self):
         score_surface = self.score_font.render(f'Score: {self.score}',True,(64,64,64))
-        sky_surface = pygame.image.load('graphics/Sky.png').convert_alpha()
+        sky_0_800_surface = pygame.image.load('graphics/Sky.png').convert_alpha()
+        sky_800_1600_surface = pygame.image.load('graphics/Sky2.png').convert_alpha()
         ground_surface = pygame.image.load('graphics/ground.png').convert_alpha()
-        self.screen.blit(sky_surface,(0,0))
+        self.screen.blit(sky_0_800_surface,(0,0))
+        self.screen.blit(sky_800_1600_surface,(800,0))
         self.screen.blit(ground_surface,(0,300))
         self.screen.blit(score_surface,(650,5))
     
@@ -225,20 +239,25 @@ class Game():
             if event.type == pygame.QUIT:
                 self.window.quit_game()
             if event.type == pygame.KEYDOWN:
-                if event.key == pygame.K_d and self.player.speed <= 0:
-                    self.player.speed = 2
-                if event.key == pygame.K_a and self.player.speed == 2:
-                    self.player.speed = -2
-                if event.key == pygame.K_SPACE and self.player.rect.bottom == 300:
-                    self.player.gravity = -8.5
-                if event.key == pygame.K_ESCAPE:
+                if event.key == pygame.K_d:  # Move right
+                    self.player.speed = 3
+                elif event.key == pygame.K_a:  # Move left
+                    self.player.speed = -3
+                elif event.key == pygame.K_SPACE:  # Jump
+                    self.player.jump()
+                elif event.key == pygame.K_ESCAPE:
                     self.paused = not self.paused
+            if event.type == pygame.KEYUP:
+                # Stop moving when the key is released
+                if event.key == pygame.K_d or event.key == pygame.K_a:
+                    self.player.speed = 0
+
 
     def game_loop(self):
 
         while self.game_active:
 
-            self.handle_player_input()
+
 
             if self.paused:
                 pause_buttons = self.render_pause_menu()
@@ -249,8 +268,11 @@ class Game():
                     pygame.display.flip()
                     self.window.handle_ui_events(pause_buttons)
             
-            else: self.render_environment()
-
+            else: 
+                self.render_environment()
+                self.handle_player_input()
+                self.player.update()
+                self.player.draw()
             # render_player()
 
             # tree_1_rect.x -= 1

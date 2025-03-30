@@ -105,7 +105,7 @@ class Window():
                 self.start_game()
                 
 
-            self.clock.tick(60)
+            self.clock.tick(30)
 
 
 class Button():
@@ -274,8 +274,8 @@ class Game():
 
             
             pygame.display.flip()
-            self.clock.tick(60)
+            self.clock.tick(30)
 
 
-window = Window(800,400,"Fuck Me!")
+window = Window(1024,768,"Into the SpaceHole Version Alpha 0.0.0.0.1")
 window.main_loop()

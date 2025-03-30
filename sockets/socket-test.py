@@ -48,14 +48,16 @@ def make_pos(tup):
 def main():
     
     p = Player(startpos[0],startpos[1],100,100,(0,255,128))
-    p2 = Player(50,50,100,100,(0,255,128))
+    p2 = Player(0,0,100,100,(0,255,128))
     clock = pygame.time.Clock()
 
     run = True
     n = Network()
     startpos = read_pos(n.get_pos())
     while run:
-
+        clock.tick(60)
+        p2pos = n.send(make_pos((p.x,p.y)))
+        p2.x = p2pos[0]
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 pygame.quit()

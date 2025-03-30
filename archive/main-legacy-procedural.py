@@ -1,7 +1,7 @@
 import pygame
 from sys import exit
-from constants import *
-from magic import tree_magic, enemy_magic
+from archive.constants import *
+from archive.magic import tree_magic, enemy_magic
 
 pygame.init()
 

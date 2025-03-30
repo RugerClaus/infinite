@@ -29,9 +29,9 @@ class Window():
         button_hovered_color = "white"
 
 
-        play_button = Button("Play!",400,100,125,50,self.button_font,button_unhovered_color,button_hovered_color,self.start_game)
-        options_button = Button("Options",400,200,125,50,self.button_font,button_unhovered_color,button_hovered_color,self.render_options_menu)
-        quit_button = Button("Exit",400,300,125,50,self.button_font,button_unhovered_color,button_hovered_color,self.quit_game)
+        play_button = Button("Play!",500,192,125,50,self.button_font,button_unhovered_color,button_hovered_color,self.start_game)
+        options_button = Button("Options",500,384,125,50,self.button_font,button_unhovered_color,button_hovered_color,self.render_options_menu)
+        quit_button = Button("Exit",500,576,125,50,self.button_font,button_unhovered_color,button_hovered_color,self.quit_game)
 
         self.screen.fill((255, 128, 0))
         play_button.draw(self.screen, pygame.mouse.get_pos())
@@ -145,67 +145,92 @@ class Button():
                 
 
 class Player(pygame.sprite.Sprite):
-    def __init__(self,x,y,screen):
+    def __init__(self, x, y, screen, game):
         super().__init__()
         self.x = x
         self.y = y
         self.speed = 0
         self.gravity = 0
+        self.jumping = False
+        self.max_jump_height = 200  # Maximum height of the jump
         self.image = pygame.image.load("graphics/Player/player_walk_1.png").convert_alpha()
         self.rect = self.image.get_rect()
-        self.rect.topleft = (x,y)
+        self.rect.topleft = (x, y)
         self.screen = screen
+        self.on_ground = True  # Track whether the player is on the ground or in the air
+        self.game = game  # Reference to the game object to access the background position
 
     def update(self):
-        # Apply gravity
-        if self.rect.bottom < 300:  
-            self.gravity += 0.5  # Gravity increases over time
-        else:
-            self.gravity = 0  # Reset gravity when on the ground
-            self.rect.bottom = 300  # Keep the player on the ground level
+        # Gravity applies only when not on the ground
+        if not self.on_ground:
+            self.gravity += 0.5  # Simulate gravity
 
-        # Update position based on speed and gravity
-        self.rect.x += self.speed
+        # Prevent the player from falling through the ground
+        if self.rect.bottom >= 701:  # Assuming 700 is the ground level
+            self.rect.bottom = 700
+            self.gravity = 0  # Reset gravity
+            self.on_ground = True  # Player is back on the ground
+
+        # Logic to prevent the player from moving once reaching the middle
+        if self.rect.left < self.screen.get_width() // 2:
+            # Player can still move to the left
+            self.rect.x += self.speed
+        elif self.rect.left >= self.screen.get_width() // 2:
+            # If the player is past the middle, check if the background is at 0,0
+            if self.game.background_x == 0:
+                # If the background is at the left edge, the player can move further left
+                self.rect.x += self.speed
+            else:
+                # Otherwise, stop the player from moving
+                self.rect.x = self.screen.get_width() // 2
+
+        # Update the player's position based on gravity
         self.rect.y += self.gravity
 
     def jump(self):
-        if self.rect.bottom == 300:  # Ensure the player is on the ground before jumping
-            self.gravity = -8.5  # Apply an upward force for jumping
+        if self.on_ground:
+            self.gravity = -15
+            self.on_ground = False
+            print("Jumping!")
 
     def draw(self):
         self.screen.blit(self.image, self.rect)
 
 class Game():
-    def __init__(self,game_active,screen,clock,window):
+    def __init__(self, game_active, screen, clock, window):
         self.paused = False
         self.game_active = game_active
-        self.pause_button_font = pygame.font.Font('font/Pixeltype.ttf',40)
-        self.score_font = pygame.font.Font('font/Pixeltype.ttf',50)
+        self.pause_button_font = pygame.font.Font('font/Pixeltype.ttf', 40)
+        self.score_font = pygame.font.Font('font/Pixeltype.ttf', 50)
         self.score = 0
         self.clock = clock
         self.window = window
         self.screen = screen
-        self.player = Player(50,20,self.screen)
+        self.player = Player(50, 700, self.screen, self)
+        
+        # Background scrolling parameters
+        self.background_x = 0  # Position of first background
+        self.background_speed = 3  # Adjusted Background speed for smoother scrolling
         self.check_state()
 
     def check_state(self):
-        if self.game_active == True:
+        if self.game_active:
             self.game_loop()
         else:
             self.window.render_main_menu()
 
     def exit(self):
         self.window.quit_game()
-    
+
     def reset(self):
         self.score = 0
         self.player.reset()
 
     def render_pause_menu(self):
         self.paused = True
-        resume_button = Button("Resume",100,75,100,50,self.pause_button_font,(173, 216, 230),(255, 255, 255),self.update_pause_state)
-        quittomenu_button = Button("Menu",100,150,100,50,self.pause_button_font,(173, 216, 230),(255, 255, 255),self.go_to_main_menu)
-        quittodesktop_button = Button("Exit",100,220,100,50,self.pause_button_font,(173, 216, 230),(255, 255, 255),self.exit)
+        resume_button = Button("Resume", 100, 75, 100, 50, self.pause_button_font, (173, 216, 230), (255, 255, 255), self.update_pause_state)
+        quittomenu_button = Button("Menu", 100, 150, 100, 50, self.pause_button_font, (173, 216, 230), (255, 255, 255), self.go_to_main_menu)
+        quittodesktop_button = Button("Exit", 100, 220, 100, 50, self.pause_button_font, (173, 216, 230), (255, 255, 255), self.exit)
         
         buttons = [resume_button, quittomenu_button, quittodesktop_button]
 
@@ -215,7 +240,7 @@ class Game():
         pygame.display.flip()
 
         return buttons
-    
+
     def go_to_main_menu(self):
         self.paused = False
         self.game_active = False
@@ -224,81 +249,72 @@ class Game():
     def update_pause_state(self):
         self.paused = not self.paused
 
+    def update_background_position(self):
+        if self.player.speed != 0:  # Only move background if the player is moving
+            # Move the background to the left when player moves right (scrolling forward)
+            if self.player.speed > 0 and self.player.x > 500:
+                self.background_x -= self.background_speed
+            # Move the background to the right when player moves left (scrolling backward)
+            elif self.player.speed < 0 and self.player.x == 500:
+                self.background_x += self.background_speed
+            
+
     def render_environment(self):
-        score_surface = self.score_font.render(f'Score: {self.score}',True,(64,64,64))
-        sky_0_800_surface = pygame.image.load('graphics/Sky.png').convert_alpha()
-        sky_800_1600_surface = pygame.image.load('graphics/Sky2.png').convert_alpha()
-        self.screen.blit(sky_0_800_surface,(0,0))
-        self.screen.blit(sky_800_1600_surface,(800,0))
+        self.update_background_position()  # Move background based on player speed
+
+        # Sky
+        sky_surface = pygame.image.load('graphics/Sky.png').convert_alpha()
+
+        # Blit the two backgrounds
+        self.screen.blit(sky_surface, (self.background_x, 400))
+
+        # Ground
         ground_surface = pygame.image.load('graphics/ground.png').convert_alpha()
 
-        self.screen.blit(ground_surface,(0,300))
-        self.screen.blit(score_surface,(650,5))
-    
+        # Blit the two ground images
+        self.screen.blit(ground_surface, (self.background_x, 700))
+
+        # Score
+        score_surface = self.score_font.render(f'Score: {self.score}', True, (64, 64, 64))
+        self.screen.blit(score_surface, (866, 5))
+
     def handle_player_input(self):
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 self.window.quit_game()
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_d:  # Move right
-                    self.player.speed = 3
-                elif event.key == pygame.K_a:  # Move left
-                    self.player.speed = -3
-                elif event.key == pygame.K_SPACE:  # Jump
+                    self.player.speed = 5  # Increase speed for smoother movement
+                elif event.key == pygame.K_a:
+                    self.player.speed = -5  
+                elif event.key == pygame.K_SPACE:  
                     self.player.jump()
                 elif event.key == pygame.K_ESCAPE:
                     self.paused = not self.paused
             if event.type == pygame.KEYUP:
-                # Stop moving when the key is released
                 if event.key == pygame.K_d or event.key == pygame.K_a:
                     self.player.speed = 0
 
-
     def game_loop(self):
-
         while self.game_active:
-
-
-
             if self.paused:
                 pause_buttons = self.render_pause_menu()
                 while self.paused:
                     mouse_pos = pygame.mouse.get_pos()
                     for button in pause_buttons:
-                        button.draw(self.screen,mouse_pos)
+                        button.draw(self.screen, mouse_pos)
                     pygame.display.flip()
                     self.window.handle_ui_events(pause_buttons)
-            
-            else: 
-                self.render_environment()
+            else:
+                self.screen.fill((208, 244, 247))  # Set a background color (optional)
+                self.render_environment()  # Render the moving background
                 self.handle_player_input()
                 self.player.update()
                 self.player.draw()
-            # render_player()
 
-            # tree_1_rect.x -= 1
-            # tree_2_rect.x -= 1
-            # tree_1_rect.bottom = 300
-            # tree_2_rect.bottom = 300
-            # if tree_1_rect.right <= 0: 
-            #     tree_magic(tree_1_rect)
-            # if tree_2_rect.right <= 0: 
-            #     tree_magic(tree_2_rect)
-            # screen.blit(tree_1_surface,tree_1_rect)
-            # screen.blit(tree_2_surface,tree_2_rect)
-
-            # snail_rect.x -= 3
-            # if snail_rect.right <= 0: snail_rect.left = 800
-            # screen.blit(snail_surface,snail_rect)
-
-            # player_gravity += 0.2
-            # player_rect.bottom += player_gravity #creates the gravity effect
-            # screen.blit(player_surface,player_rect)
-
-            
             pygame.display.flip()
-            self.clock.tick(30)
+            self.clock.tick(60)
 
 
-window = Window(1024,768,"Into the SpaceHole Version Alpha 0.0.0.0.1")
+window = Window(1000,800,"Into the SpaceHole Version Alpha 0.0.0.0.3")
 window.main_loop()

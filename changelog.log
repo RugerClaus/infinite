@@ -16,3 +16,11 @@ A 0.0.0.0.4 ---- LOG
 
 Side scrolling properly fixed for the most part, but I need to stop it from scrolling after the player has gone right a bit and then goes back. The scrolling will stop,
 but I want to find a way to integrate a coordinate system to track this and make it easier for development.
+
+------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+A 0.0.0.0.5 ---- LOG
+
+I finally was able to get the scrolling correct and able to move all the way until the x position of the sky and ground reach x=-3000! That is huge.
+The game will currently not let you go back once you hit that point due to scrolling being disabled after the sky and ground reach said x position.
+Next up is likely a debug menu showing the current coordinates of the player.

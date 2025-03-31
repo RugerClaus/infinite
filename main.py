@@ -178,9 +178,13 @@ class Player(pygame.sprite.Sprite):
             if self.game.background_x == 0:
                 # If the background is at the left edge, the player can move further left
                 self.rect.x += self.speed
-            else:
+            elif self.game.background_x == -2900:
                 # Otherwise, stop the player from moving
+                self.rect.x += self.speed
+            else:
                 self.rect.x = self.screen.get_width() // 2
+        if self.rect.x <= 0 or self.rect.x >= 1000 and self.game.background_x <= -3100:
+            self.speed = 0
 
         # Update the player's position based on gravity
         self.rect.y += self.gravity
@@ -251,8 +255,10 @@ class Game():
 
     def update_background_position(self):
         # Start scrolling the background only after the player reaches x = 500
-        if self.player.rect.x > 500:
+        if self.player.rect.centerx >= 500:
             self.background_scrolling = True  # Enable scrolling
+        elif self.background_x == 0:
+            self.background_scrolling = False
 
         if self.background_scrolling:
             if self.player.speed > 0:  # Player moving right
@@ -263,8 +269,9 @@ class Game():
                     self.background_x += self.background_speed
 
         # Reset the background to create a seamless scroll effect
-        if self.background_x <= -self.screen.get_width():
-            self.background_x = 0
+        if self.background_x <= -3000:
+            self.background_scrolling = False# replace this with level complete logic
+            self.player.rect.x += self.player.speed
 
     def render_environment(self):
         self.update_background_position()  # Update background position based on player speed
@@ -300,6 +307,10 @@ class Game():
                     self.player.jump()
                 elif event.key == pygame.K_ESCAPE:
                     self.paused = not self.paused
+                #debug
+                elif event.key == pygame.K_F2:
+                    print(f"Background left x position: {self.background_x}")
+                    print(f"player center x position: {self.player.rect.x}")
             if event.type == pygame.KEYUP:
                 if event.key == pygame.K_d or event.key == pygame.K_a:
                     self.player.speed = 0  # Stop movement when key is released

@@ -63,3 +63,8 @@ Passed the music manager to the Player object in the Game object's constructor t
 adjustment in the main menu options. Can't adjust it in pause game yet, but I don't see why its necessary for now. Likely need to come up with a different system for
 managing button states.
 
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+A 0.0.0.1.1 ---- LOG
+
+Separated all classes and my modularity paid off. The program works great so far. Started implementing enemy class.

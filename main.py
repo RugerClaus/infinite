@@ -202,46 +202,73 @@ class Player(pygame.sprite.Sprite):
         self.screen = screen
         self.on_ground = True  # Track whether the player is on the ground or in the air
         self.game = game  # Reference to the game object to access the background position
+        self.walking_left = False
+        self.was_walking = self.walking
+
+        #going right
         self.walking_frames = [
             pygame.image.load("graphics/Player/player_walk_1.png").convert_alpha(),
             pygame.image.load("graphics/Player/player_walk_2.png").convert_alpha()
         ]
         self.walking_animation = Animation(self.walking_frames,10)
-        self.jumping_frame = pygame.image.load("graphics/Player/jump.png").convert_alpha()
+        self.jumping_frame = [pygame.image.load("graphics/Player/jump.png").convert_alpha()]
+        self.jumping_animation = Animation(self.jumping_frame,10)
+
+        #going left
+        self.walking_backward_frames = [
+            pygame.image.load("graphics/Player/player_walk_back_1.png").convert_alpha(),
+            pygame.image.load("graphics/Player/player_walk_back_2.png").convert_alpha()
+        ]
+        self.walking_backward_animation = Animation(self.walking_backward_frames,10)
+        self.jumping_back_frame = [pygame.image.load("graphics/Player/jump_back.png").convert_alpha()]
+        self.jumping_backward_animation = Animation(self.jumping_back_frame,10)
+
+        #facing forward
+        self.holding_still_frame = [pygame.image.load("graphics/Player/player_stand.png").convert_alpha()]
+        self.holding_still_animation = Animation(self.holding_still_frame,10)
+        
+
 
     def update(self):
-        # Gravity applies only when not on the ground
-        if not self.on_ground:
-            self.gravity += 0.5  # Simulate gravity
-
-        # Prevent the player from falling through the ground
-        if self.rect.bottom >= 701:  # Assuming 700 is the ground level
-            self.rect.bottom = 700
-            self.gravity = 0  # Reset gravity
-            self.on_ground = True  # Player is back on the ground
         
-        if self.walking == True:
-            self.walking_animation.update()
-            
+        if not self.on_ground:
+            self.gravity += 0.5  
+            self.jumping_animation.update()
 
-        # Logic to prevent the player from moving once reaching the middle
+        if self.on_ground and not self.walking:
+            self.holding_still_animation.update()
+
+        if self.rect.bottom >= 701:
+            self.rect.bottom = 700
+            self.gravity = 0
+            self.on_ground = True 
+
+            if self.was_walking and self.speed != 0:
+                self.walking = True
+
+        if self.walking and self.on_ground:
+            if self.speed > 0: #right
+                self.walking_animation.update()
+            elif self.speed < 0: #left
+                self.walking_backward_animation.update()
+
         if self.rect.left < self.screen.get_width() // 2:
-            # Player can still move to the left
+            
             self.rect.x += self.speed
         elif self.rect.left >= self.screen.get_width() // 2:
-            # If the player is past the middle, check if the background is at 0,0
+            
             if self.game.background_x == 0:
-                # If the background is at the left edge, the player can move further left
+                
                 self.rect.x += self.speed
             elif self.game.background_x == -2900:
-                # Otherwise, stop the player from moving
+                
                 self.rect.x += self.speed
             else:
                 self.rect.x = self.screen.get_width() // 2
         if self.rect.x <= 0 or self.rect.x >= 1000 and self.game.background_x <= -3100:
             self.speed = 0
 
-        # Update the player's position based on gravity
+        
         self.rect.y += self.gravity
         
 
@@ -249,14 +276,25 @@ class Player(pygame.sprite.Sprite):
         if self.on_ground:
             self.gravity = -15
             self.on_ground = False
+            self.was_walking = self.walking
+            self.walking = False
             print("Jumping!")
 
     def draw(self):
-        if self.walking == True:
-            self.image = self.walking_animation.get_current_frame()
+        if not self.on_ground:
+            self.walking = False
+            if self.speed > 0: #right
+                self.image = self.jumping_animation.get_current_frame()
+            elif self.speed < 0: #left
+                self.image = self.jumping_backward_animation.get_current_frame()
+        elif self.walking:
+            if self.speed > 0: #right
+                self.image = self.walking_animation.get_current_frame()
+            elif self.speed < 0: #left
+                self.image = self.walking_backward_animation.get_current_frame()
         else:
-            self.image = self.walking_frames[0]
-        self.screen.blit(self.image,self.rect)
+            self.image = self.holding_still_frame[0]
+        self.screen.blit(self.image, self.rect)
 
 
 class Game():
@@ -353,7 +391,6 @@ class Game():
 
         # Blit the two ground images
         self.screen.blit(ground_surface, (self.background_x, 700))
-        self.screen.blit(ground_surface, (self.background_x + self.screen.get_width(), 700))
 
     def handle_player_input(self):
         for event in pygame.event.get():
@@ -382,6 +419,7 @@ class Game():
             if event.type == pygame.KEYUP:
                 if event.key == pygame.K_d or event.key == pygame.K_a:
                     self.player.speed = 0  # Stop movement when key is released
+                    self.player.was_walking = self.player.walking
                     self.player.walking = False
 
     def game_loop(self):
@@ -408,5 +446,5 @@ class Game():
             pygame.display.flip()
             self.clock.tick(60)
 
-window = Window(1000, 800, "Into the SpaceHole Version Alpha 0.0.0.0.7")
+window = Window(1000, 800, "Into the SpaceHole Version Alpha 0.0.0.0.8")
 window.main_loop()

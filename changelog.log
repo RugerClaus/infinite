@@ -38,3 +38,11 @@ A 0.0.0.0.7 ---- LOG
 
 Implented player walking animation. Animation class will animate any set of sprites. Need to animate a walking left animation or just flip the player. Need to implemented
 jumping animation as well, but that's just one frame. Getting closer to implementing enemy logic and structures. 
+
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+A 0.0.0.0.8 --- LOG
+
+Completed implementation of player walking forward, backward and jumping forward and backward and holding still. So player implementation is there and just needs
+to have the player sprites swapped for custom ones rather than these placeholders that have been really excellent. Fixed ground loading issue where it was still trying to repeat the
+background from an earlier implementation when i was adding the sidescrolling.

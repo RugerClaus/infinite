@@ -172,21 +172,42 @@ class Button():
                 self.action()
 
 
+class Animation:
+    def __init__(self, frames, frame_delay):
+        self.frames = frames
+        self.frame_delay = frame_delay
+        self.current_frame = 0
+        self.frame_timer = 0
+
+    def update(self):
+        self.frame_timer += 1
+        if self.frame_timer >= self.frame_delay:
+            self.frame_timer = 0
+            self.current_frame = (self.current_frame + 1) % len(self.frames)
+
+    def get_current_frame(self):
+        return self.frames[self.current_frame]
+
 class Player(pygame.sprite.Sprite):
     def __init__(self, x, y, screen, game):
         super().__init__()
         self.x = x
+        self.walking = False
         self.y = y
         self.speed = 0
         self.gravity = 0
         self.jumping = False
         self.max_jump_height = 200  # Maximum height of the jump
-        self.image = pygame.image.load("graphics/Player/player_walk_1.png").convert_alpha()
-        self.rect = self.image.get_rect()
-        self.rect.topleft = (x, y)
+        self.rect = pygame.rect.Rect(x,y,64,84)
         self.screen = screen
         self.on_ground = True  # Track whether the player is on the ground or in the air
         self.game = game  # Reference to the game object to access the background position
+        self.walking_frames = [
+            pygame.image.load("graphics/Player/player_walk_1.png").convert_alpha(),
+            pygame.image.load("graphics/Player/player_walk_2.png").convert_alpha()
+        ]
+        self.walking_animation = Animation(self.walking_frames,10)
+        self.jumping_frame = pygame.image.load("graphics/Player/jump.png").convert_alpha()
 
     def update(self):
         # Gravity applies only when not on the ground
@@ -198,6 +219,10 @@ class Player(pygame.sprite.Sprite):
             self.rect.bottom = 700
             self.gravity = 0  # Reset gravity
             self.on_ground = True  # Player is back on the ground
+        
+        if self.walking == True:
+            self.walking_animation.update()
+            
 
         # Logic to prevent the player from moving once reaching the middle
         if self.rect.left < self.screen.get_width() // 2:
@@ -218,6 +243,7 @@ class Player(pygame.sprite.Sprite):
 
         # Update the player's position based on gravity
         self.rect.y += self.gravity
+        
 
     def jump(self):
         if self.on_ground:
@@ -226,7 +252,11 @@ class Player(pygame.sprite.Sprite):
             print("Jumping!")
 
     def draw(self):
-        self.screen.blit(self.image, self.rect)
+        if self.walking == True:
+            self.image = self.walking_animation.get_current_frame()
+        else:
+            self.image = self.walking_frames[0]
+        self.screen.blit(self.image,self.rect)
 
 
 class Game():
@@ -332,8 +362,10 @@ class Game():
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_d:  # Move right
                     self.player.speed = 5  # Increase speed for smoother movement
+                    self.player.walking = True
                 elif event.key == pygame.K_a:  # Move left
                     self.player.speed = -5  
+                    self.player.walking = True
                 elif event.key == pygame.K_SPACE:  
                     self.player.jump()
                 elif event.key == pygame.K_ESCAPE:
@@ -350,6 +382,7 @@ class Game():
             if event.type == pygame.KEYUP:
                 if event.key == pygame.K_d or event.key == pygame.K_a:
                     self.player.speed = 0  # Stop movement when key is released
+                    self.player.walking = False
 
     def game_loop(self):
         while self.game_active:
@@ -375,5 +408,5 @@ class Game():
             pygame.display.flip()
             self.clock.tick(60)
 
-window = Window(1000, 800, "Into the SpaceHole Version Alpha 0.0.0.0.6")
+window = Window(1000, 800, "Into the SpaceHole Version Alpha 0.0.0.0.7")
 window.main_loop()

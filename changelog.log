@@ -31,3 +31,10 @@ A 0.0.0.0.6 ---- LOG
 
 I implemented the functionality and logic for a basic debug menu, currently showing the FPS and player coordinates accurately. Next implemenation
 will no doubt be to animate the player. 
+
+------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+A 0.0.0.0.7 ---- LOG
+
+Implented player walking animation. Animation class will animate any set of sprites. Need to animate a walking left animation or just flip the player. Need to implemented
+jumping animation as well, but that's just one frame. Getting closer to implementing enemy logic and structures. 

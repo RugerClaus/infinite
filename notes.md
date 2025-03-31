@@ -10,3 +10,12 @@ Need to create a pause menu. Perhaps further options in the game for video, soun
 create a way to weave around trees, perhaps changing the rendering mid gameplay for the player to interact with minimum 3 layers depth: back, middle, front. Perhaps have to shrink/grow the rectangle/character model to simulate moving in 3d space. It would only have to be minor for the illusion to work. 
 Perhaps try to use the rectangle object in pygame to shrink the player rectangle for this.
 
+Update Version Alpha 0.0.0.0.6
+
+What have I completed so far?
+
+Ground moves while player running: check
+Structures: not started
+day and night: not started
+pause menu: check
+3d mapping: not started

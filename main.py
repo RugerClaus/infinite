@@ -1,6 +1,7 @@
 import pygame
 import random
 from sys import exit as ex
+print(pygame.__version__)
 
 # Window class
 class Window():
@@ -9,7 +10,7 @@ class Window():
         pygame.font.init()
         self.width = width
         self.height = height
-        self.version = "Alpha 0.0.0.0.9"
+        self.version = "Alpha 0.0.0.1.0"
         self.title = f"Into the SpaceHole Version {self.version}"
         pygame.display.set_caption(self.title)
         self.screen = pygame.display.set_mode((width, height))
@@ -28,7 +29,7 @@ class Window():
         button_unhovered_color = "orange"
         button_hovered_color = "white"
 
-        title = pygame.image.load("graphics/spacehole_title.png")
+        title = pygame.image.load("graphics/spacehole_title.png").convert_alpha()
         title_rect = title.get_rect(center = (500,100))
 
         play_button = Button("Play!", 500, 192, 125, 50, self.button_font, button_unhovered_color, button_hovered_color,
@@ -55,17 +56,40 @@ class Window():
 
         # buttons
         self.music_toggle_button = Button(f"Music: {self.music_manager.music_status()}", 500, 200, 150, 50, self.button_font, button_unhovered_color, button_hovered_color, self.toggle_music)
+        volume_down_button = Button(f"-",450,300,50,50,self.button_font,button_unhovered_color,button_hovered_color, self.music_volume_down)
+        level_placeholder = Button(f"{round(int(self.music_manager.volume*10), 1)}",500,300,50,50,self.button_font,button_unhovered_color,button_hovered_color,None)
+        volume_up_button = Button(f"+",550,300,50,50,self.button_font,button_unhovered_color,button_hovered_color, self.music_volume_up)
         self.sfx_toggle_button = Button(f"SFX: {self.music_manager.sfx_status()}", 500, 400, 150, 50, self.button_font, button_unhovered_color, button_hovered_color, self.toggle_sfx)
         back_button = Button("Back", 500, 600, 100, 50, self.button_font, button_unhovered_color, button_hovered_color, self.render_main_menu)
 
+        if not self.music_manager.music_active:
+            level_placeholder.text = "/"
+            volume_down_button.text = ""
+            volume_up_button.text = ""
+            volume_down_button.action = None
+            volume_up_button.action = None
+
         self.screen.fill((255, 128, 0))
         self.music_toggle_button.draw(self.screen,pygame.mouse.get_pos())
+        volume_down_button.draw(self.screen,pygame.mouse.get_pos())
+        volume_up_button.draw(self.screen,pygame.mouse.get_pos())
+        level_placeholder.draw(self.screen,pygame.mouse.get_pos())
         self.sfx_toggle_button.draw(self.screen,pygame.mouse.get_pos())
         back_button.draw(self.screen, pygame.mouse.get_pos())
 
+        buttons = [back_button,self.music_toggle_button,volume_down_button,volume_up_button,self.sfx_toggle_button]
+
         pygame.display.flip()
 
-        self.handle_ui_events([back_button,self.music_toggle_button,self.sfx_toggle_button])
+
+        self.handle_ui_events(buttons)
+
+
+    def music_volume_down(self):
+        self.music_manager.set_volume(self.music_manager.volume - 0.1)
+
+    def music_volume_up(self):
+        self.music_manager.set_volume(self.music_manager.volume + 0.1)
 
     def toggle_music(self):
         self.music_manager.toggle_music('menu')
@@ -108,7 +132,7 @@ class Window():
             elif self.window_state == "in_game":
                 self.start_game()
 
-            self.clock.tick(30)
+            self.clock.tick(60)
 
 class SoundManager:
     def __init__(self, volume=0.5):
@@ -269,8 +293,9 @@ class Animation:
         return self.frames[self.current_frame]
 
 class Player(pygame.sprite.Sprite):
-    def __init__(self, x, y, screen, game):
+    def __init__(self, x, y, screen, game,music_manager):
         super().__init__()
+        self.music_manager = music_manager
         self.x = x
         self.walking = False
         self.y = y
@@ -358,6 +383,7 @@ class Player(pygame.sprite.Sprite):
             self.on_ground = False
             self.was_walking = self.walking
             self.walking = False
+            self.music_manager.play_sfx('jump')
             print("Jumping!")
 
     def draw(self):
@@ -387,7 +413,7 @@ class Game():
         self.clock = clock
         self.window = window
         self.screen = screen
-        self.player = Player(50, 700, self.screen, self)
+        self.player = Player(50, 700, self.screen, self,music_manager)
         self.debug = DebugMenu(self.screen,self.window,self)
         self.background_x = 0 
         self.background_speed = 3
@@ -488,7 +514,6 @@ class Game():
                     self.player.walking = True
                 elif event.key == pygame.K_SPACE:  
                     self.player.jump()
-                    self.music_manager.play_sfx('jump')
                 elif event.key == pygame.K_ESCAPE:
                     self.paused = not self.paused
                 #debug

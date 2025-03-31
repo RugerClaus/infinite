@@ -54,3 +54,12 @@ A 0.0.0.0.9 ---- LOG
 Now you can toggle music and sound effects. Full integration of original music. Jump sound effect works. Also updated debug menu and it now displays the current version of 
 the game both in the title bar and in the debug menu. Game now has a placeholder title on main menu. Next implementation will be a volume adjuster. I'm not certain about a
 slider yet, but certainly a + and - button to turn both sfx and music up and down independently. 
+
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+A 0.0.0.1.0 ---- LOG
+
+Passed the music manager to the Player object in the Game object's constructor to set off sound effects upon player actions. Upgraded to pygame-ce. Implemented volume 
+adjustment in the main menu options. Can't adjust it in pause game yet, but I don't see why its necessary for now. Likely need to come up with a different system for
+managing button states.
+

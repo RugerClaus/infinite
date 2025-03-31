@@ -15,6 +15,7 @@ class Window():
         self.running = True
 
         self.font = pygame.font.Font('font/Pixeltype.ttf', 50)
+        self.debug_font = pygame.font.Font('font/Pixeltype.ttf',30)
         self.button_font = pygame.font.Font('font/Roboto-Black.ttf', 30)
         self.button_fontgame_over_font = pygame.font.Font('font/gameover.ttf', 50)
 
@@ -106,6 +107,35 @@ class Window():
 
             self.clock.tick(30)
 
+class DebugMenu():
+    def __init__(self,screen,window,game):
+        self.on = False
+        self.surface = pygame.surface.Surface((250,75))
+        self.rect = self.surface.get_rect()
+        self.win = window
+        self.game = game
+        self.screen = screen
+        self.fps_text = self.win.debug_font.render(f"FPS: {self.game.clock.get_fps()}",True,'white')
+
+    def draw(self):
+        self.surface.fill('lightblue')
+        self.surface.blit(self.fps_text, (20, 20))
+        self.surface.blit(self.coords_text, (20, 50))
+        self.screen.blit(self.surface, self.rect)
+
+    def start(self):
+        self.on = True
+
+    def stop(self):
+        self.on = False
+    
+    def update(self):
+        if self.on:
+            player_coords = (self.game.player.rect.x, self.game.player.rect.y)
+            debug_x = self.game.player.rect.x + abs(self.game.background_x)
+            self.fps_text = self.win.debug_font.render(f"FPS: {self.game.clock.get_fps()}", True, 'white')     
+            self.coords_text = self.win.debug_font.render(f"Player(x, y): ({debug_x},{player_coords[1]})", True, 'white')
+            self.draw()
 
 class Button():
     def __init__(self, text, x, y, width, height, font, text_unhovered_color, text_hovered_color, action=None):
@@ -210,6 +240,7 @@ class Game():
         self.window = window
         self.screen = screen
         self.player = Player(50, 700, self.screen, self)
+        self.debug = DebugMenu(self.screen,self.window,self)
 
         # Background scrolling parameters
         self.background_x = 0  # Position of first background
@@ -229,6 +260,10 @@ class Game():
     def reset(self):
         self.score = 0
         self.player.reset()
+
+    def render_score(self):
+        score_surface = self.score_font.render(f'Score: {self.score}', True, (64, 64, 64))
+        self.screen.blit(score_surface, (866, 5))
 
     def render_pause_menu(self):
         self.paused = True
@@ -290,10 +325,6 @@ class Game():
         self.screen.blit(ground_surface, (self.background_x, 700))
         self.screen.blit(ground_surface, (self.background_x + self.screen.get_width(), 700))
 
-        # Score
-        score_surface = self.score_font.render(f'Score: {self.score}', True, (64, 64, 64))
-        self.screen.blit(score_surface, (866, 5))
-
     def handle_player_input(self):
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -311,6 +342,11 @@ class Game():
                 elif event.key == pygame.K_F2:
                     print(f"Background left x position: {self.background_x}")
                     print(f"player center x position: {self.player.rect.x}")
+                elif event.key == pygame.K_F9:
+                    if not self.debug.on:  # Toggle debug only when it's off
+                        self.debug.start()
+                    else:  # If it's on, turn it off
+                        self.debug.stop()
             if event.type == pygame.KEYUP:
                 if event.key == pygame.K_d or event.key == pygame.K_a:
                     self.player.speed = 0  # Stop movement when key is released
@@ -331,9 +367,13 @@ class Game():
                 self.handle_player_input()
                 self.player.update()
                 self.player.draw()
+                self.render_score()
+            
+            if self.debug.on:
+                self.debug.update()
 
             pygame.display.flip()
             self.clock.tick(60)
 
-window = Window(1000, 800, "Into the SpaceHole Version Alpha 0.0.0.0.3")
+window = Window(1000, 800, "Into the SpaceHole Version Alpha 0.0.0.0.6")
 window.main_loop()

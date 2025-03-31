@@ -24,3 +24,10 @@ A 0.0.0.0.5 ---- LOG
 I finally was able to get the scrolling correct and able to move all the way until the x position of the sky and ground reach x=-3000! That is huge.
 The game will currently not let you go back once you hit that point due to scrolling being disabled after the sky and ground reach said x position.
 Next up is likely a debug menu showing the current coordinates of the player.
+
+------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+A 0.0.0.0.6 ---- LOG
+
+I implemented the functionality and logic for a basic debug menu, currently showing the FPS and player coordinates accurately. Next implemenation
+will no doubt be to animate the player. 

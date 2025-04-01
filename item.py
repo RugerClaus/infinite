@@ -14,6 +14,7 @@ class Item(Entity):
         #self.angular_velocity = angular_velocity 
         self.image = pygame.image.load(f"graphics/Items/{name}.png")
         self.rect = self.image.get_rect(bottomleft = (x,y))
+        self.is_in_hotbar = False
 
     def update(self):
         super().update()

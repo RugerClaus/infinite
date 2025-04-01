@@ -112,3 +112,10 @@ A 0.0.0.1.5 ---- LOG
 
 Partially implemented inventory system. You are able to open an inventory, and it will store items picked up by the player. It can put them in the hotbar as well, but there's some
 strange scaling problems still. Hopefully I'll get that resolved soon. Posting this because it does physically work.
+
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+A 0.0.0.1.51 ---- LOG
+
+You can add and remove things from the inventory to the hotbar and back. The scaling issue with the hotbar has been fixed. Console now displays put (item) in inventory or in hotbar
+depending on current item position stored in item. is_in_hotbar. Next changes are going to be stackable items. Perhaps food of some sort?

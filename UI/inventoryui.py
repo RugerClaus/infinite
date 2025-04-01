@@ -46,14 +46,27 @@ class InventoryUI():
 
                     self.game.screen.blit(scaled_image, (x_offset, y_offset))
     def handle_input(self, mouse_pos):
-        if self.is_open and pygame.mouse.get_pressed()[0]:  # Left click
-            for i, item in enumerate(self.game.player.inventory.items):
-                x = 200 + (i % self.columns) * (self.slot_size + 10)
-                y = 150 + (i // self.columns) * (self.slot_size + 10)
-                if x <= mouse_pos[0] <= x + self.slot_size and y <= mouse_pos[1] <= y + self.slot_size:
-                    # Move the item to the first available hotbar slot
-                    for j in range(self.game.hotbar.number_of_slots):
-                        if not self.game.hotbar.items[j]:  
-                            self.game.hotbar.items[j] = item  # Move item to hotbar
-                            self.game.player.inventory.remove_item(i)  # Remove from inventory
-                            return
+        if pygame.mouse.get_pressed()[0]:  # Left mouse button is held
+            if not hasattr(self, 'last_click') or not self.last_click:  # Only trigger once per click
+                for i, item in enumerate(self.game.player.inventory.items):
+                    slot_x = 200 + (i % self.columns) * (self.slot_size + 10)
+                    slot_y = 150 + (i // self.columns) * (self.slot_size + 10)
+
+                    if slot_x <= mouse_pos[0] <= slot_x + 50 and slot_y <= mouse_pos[1] <= slot_y + 50:
+                        # Check if the item is already in the hotbar (to avoid duplicates)
+                        if item.is_in_hotbar:
+                            print(f"{item.name} is already in the hotbar.")
+                            return  # If the item is in the hotbar, do nothing
+                        
+                        # Loop through hotbar slots
+                        for j in range(self.game.hotbar.number_of_slots):
+                            if not self.game.hotbar.items[j]:  # If hotbar slot is empty
+                                self.game.hotbar.items[j] = item  # Move item to hotbar
+                                self.game.player.inventory.hotbar_item(i)  # Remove from inventory
+                                item.is_in_hotbar = True  # Mark item as in hotbar
+                                print(f"Moved {item.name} to hotbar.")
+                                return  # Exit after moving the item
+
+                self.last_click = True  # Prevents repeated calls
+            else:
+                self.last_click = False  # Reset when mouse is released

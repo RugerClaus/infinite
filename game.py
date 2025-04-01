@@ -192,7 +192,6 @@ class Game():
                 self.player.draw()
                 self.enemies.update()
                 self.enemies.draw(self.screen)
-                self.hotbar.draw()
                 nearest_enemy_data = self.player.get_nearest_enemy(self.enemies)
 
                 if self.debug.on:
@@ -222,6 +221,8 @@ class Game():
 
                 self.inventory_ui.draw()
                 self.inventory_ui.handle_input(pygame.mouse.get_pos())
+                self.hotbar.draw()
+                self.hotbar.handle_input(pygame.mouse.get_pos())
             
             if self.debug.on:
                 self.debug.update(nearest_enemy_data)

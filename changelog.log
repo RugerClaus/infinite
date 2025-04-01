@@ -105,3 +105,10 @@ A 0.0.0.1.4 ---- LOG
 Added logic for calculating distance from player to nearest enemy which will be useful for enemy pathfinding later. Made those x,y values visible in the debug menu as well. I 
 also calculated the relational direction to the player of the nearest enemy. It is also displayed in the debug menu. Create UI directory for UI elements. Officially started
 Inventory UI. Empty constructor for now, but will update more.
+
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+A 0.0.0.1.5 ---- LOG
+
+Partially implemented inventory system. You are able to open an inventory, and it will store items picked up by the player. It can put them in the hotbar as well, but there's some
+strange scaling problems still. Hopefully I'll get that resolved soon. Posting this because it does physically work.

@@ -5,6 +5,7 @@ from UI.button import Button
 from enemy import Enemy
 from item import Item
 from UI.hotbar import Hotbar
+from UI.inventoryui import InventoryUI
 
 class Game():
     def __init__(self, game_active, screen, clock, window,music_manager):
@@ -21,11 +22,12 @@ class Game():
         self.player = Player(50, 616, self.screen, self,music_manager)
         self.enemies = pygame.sprite.Group()
         self.snail = Enemy(900,700,self,self.player,'snail')
-        self.hotbar = Hotbar(self.screen,self.player.inventory,self.window)
+        self.hotbar = Hotbar(self)
         self.items = pygame.sprite.Group()
         self.items.add(Item(400,700,5,50,'baton',self))
         self.items.add(Item(2000,700,5,50,'weird space gun',self))
         self.debug = DebugMenu(self.screen,self.window,self)
+        self.inventory_ui = InventoryUI(self)
         self.background_x = 0 
         self.background_speed = 3
         self.background_scrolling = False
@@ -115,9 +117,18 @@ class Game():
 
             if event.type == pygame.QUIT:
                 self.window.quit_game()
+            if event.type == pygame.MOUSEWHEEL:
+                if event.y == -1:
+                    self.hotbar.selected_index += 1
+                else:
+                    self.hotbar.selected_index -= 1
+                if self.hotbar.selected_index > 5:
+                    self.hotbar.selected_index = 0
+                elif self.hotbar.selected_index < 0:
+                    self.hotbar.selected_index = 5
+                #print(f"Direction Scrolled: {event.y}, Setting Selected Index to: {self.hotbar.selected_index}")
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_1:
-                    
                     self.hotbar.selected_index = 0
                 elif event.key == pygame.K_2:
                     self.hotbar.selected_index = 1
@@ -129,7 +140,7 @@ class Game():
                     self.hotbar.selected_index = 4
                 elif event.key == pygame.K_6:
                     self.hotbar.selected_index = 5
-                print(f"Key Pressed: {event.key}, Setting Selected Index to: {self.hotbar.selected_index}")
+                #print(f"Key Pressed: {event.key}, Setting Selected Index to: {self.hotbar.selected_index}")
                 if event.key == pygame.K_d:
                     self.player.speed = 5
                     self.player.walking = True
@@ -141,7 +152,7 @@ class Game():
                 elif event.key == pygame.K_ESCAPE:
                     self.paused = not self.paused
                 elif event.key == pygame.K_e: # fuck you I know. It's a good button. Why change it?
-                    self.player.inventory.display_inventory() 
+                    self.inventory_ui.toggle_inventory() 
                 #debug
                 elif event.key == pygame.K_F2:
                     print(f"Background left x position: {self.background_x}")
@@ -181,7 +192,6 @@ class Game():
                 self.player.draw()
                 self.enemies.update()
                 self.enemies.draw(self.screen)
-                self.hotbar.update()
                 self.hotbar.draw()
                 nearest_enemy_data = self.player.get_nearest_enemy(self.enemies)
 
@@ -209,6 +219,9 @@ class Game():
                         self.enemy_jumped = False
 
                 self.render_score()
+
+                self.inventory_ui.draw()
+                self.inventory_ui.handle_input(pygame.mouse.get_pos())
             
             if self.debug.on:
                 self.debug.update(nearest_enemy_data)

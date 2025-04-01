@@ -11,13 +11,14 @@ class Window():
         pygame.font.init()
         self.width = width
         self.height = height
-        self.version = "Alpha 0.0.0.1.4"
+        self.version = "Alpha 0.0.0.1.5"
         self.title = f"Into the SpaceHole Version {self.version}"
         pygame.display.set_caption(self.title)
         self.screen = pygame.display.set_mode((width, height))
         self.clock = pygame.time.Clock()
         self.running = True
         self.font = pygame.font.Font('font/Pixeltype.ttf', 50)
+        self.inventory_font = pygame.font.Font('font/Pixeltype.ttf',40)
         self.debug_font = pygame.font.Font('font/Pixeltype.ttf',25)
         self.button_font = pygame.font.Font('font/Roboto-Black.ttf', 30)
         self.button_fontgame_over_font = pygame.font.Font('font/gameover.ttf', 50)

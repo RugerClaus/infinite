@@ -1,57 +1,48 @@
 import pygame
-
 class Hotbar():
-    def __init__(self,screen,inventory,window):
-        self.screen = screen
-        self.inventory = inventory
-
-        self.slot_size = 50
-        self.padding = 3
-        self.selected_padding = 15
-        self.number_of_slots = 6
-
-        self.width = self.number_of_slots * (self.slot_size + self.padding) - self.padding
-        self.x = 950
-        self.y = 50
-        self.selected_index = 0
-        self.color = (255,255,255)
+    def __init__(self, game):
+        self.game = game
+        self.number_of_slots = 6  # Fixed number of slots.
+        self.items = [None] * self.number_of_slots  # None means empty slot.
+        self.selected_index = 0  # First item by default.
 
     def draw(self):
-        hotbar_surface = pygame.Surface((self.width, self.number_of_slots * (self.slot_size + self.padding)), pygame.SRCALPHA)
-        hotbar_surface.set_alpha(150)
-
+        # Simplified drawing: Just draw rectangles for each slot.
         for i in range(self.number_of_slots):
-            slot_x = self.x
-            slot_y = self.y + i * (self.slot_size + self.padding)
+            slot_x = 0
+            slot_y = 100 + i * 51
 
-            pygame.draw.rect(self.screen, self.color, (slot_x, slot_y, self.slot_size, self.slot_size), border_radius=5)
-            pygame.draw.rect(self.screen, (0, 0, 0), (slot_x, slot_y, self.slot_size, self.slot_size), 2)
+            if i == self.selected_index:
+                border_color = (255,128,64)
+                border_thickness = 4
+            else:
+                border_color = (255,255,255)
+                border_thickness = 2
 
-            slot_color = (128, 128, 128) if i == self.selected_index else (255, 255, 255)
-            pygame.draw.rect(self.screen, slot_color, (slot_x, slot_y, self.slot_size, self.slot_size), border_radius=5) #updates this again so that I can control the inventory slots.
+            pygame.draw.rect(self.game.screen,border_color, (slot_x, slot_y, 50, 50), border_thickness)  # Slot border.
+            if self.items[i]:  # If there's an item in this slot.
+                item_width, item_height = self.items[i].image.get_size()
 
-            if i < len(self.inventory.items):  
-                item = self.inventory.items[i]
-                
-                if item.image:
-                    item_width, item_height = item.image.get_size()
+                if item_height >= 50:
+                    item_height -= 10
+                if item_width >= 50:
+                    item_width -= 10
 
-                    if item_height >= self.slot_size:
-                        item_height -= 10
-                    if item_width >= self.slot_size:
-                        item_width -= 10
-                    scaled_image = pygame.transform.scale(item.image, (item_width, item_height))
 
-                    # Center the image in the slot
-                    image_rect = scaled_image.get_rect(center=(slot_x + self.slot_size // 2, slot_y + self.slot_size // 2))
-                    self.screen.blit(scaled_image, image_rect.topleft)
-                else:
-                    pygame.draw.rect(self.screen, (255, 255, 0), (slot_x, slot_y, self.slot_size, self.slot_size))  # Yellow box for missing images
-                    font = pygame.font.Font(None, 24)
-                    text_surface = font.render(item.name, True, (0, 0, 0))
-                    self.screen.blit(text_surface, (slot_x + 5, slot_y + 5))
+                scaled_image = pygame.transform.scale(self.items[i].image, (item_width, item_height))
+                pygame.draw.rect(self.game.screen, (255, 255, 255,100), (slot_x, slot_y, 50, 50), 2)
+                self.game.screen.blit(scaled_image, (slot_x, slot_y))  # Draw item image
 
-        self.screen.blit(hotbar_surface, (self.x, self.y))
-
-    def update(self):
-        self.hotbar_items = self.inventory.items[:self.number_of_slots]
+    def handle_input(self, mouse_pos):
+        for i in range(self.number_of_slots):
+            slot_x = 100 + i * 60
+            slot_y = 50
+            if slot_x <= mouse_pos[0] <= slot_x + 50 and slot_y <= mouse_pos[1] <= slot_y + 50:
+                if pygame.mouse.get_pressed()[0]:  # Left click
+                    self.selected_index = i
+                    item = self.items[i]
+                    if item:
+                        # Move item from hotbar to inventory.
+                        self.game.player.inventory.add_item(item)
+                        self.items[i] = None  # Clear hotbar slot.
+                    return

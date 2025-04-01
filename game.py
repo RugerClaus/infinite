@@ -1,10 +1,10 @@
 import pygame
 from player import Player
-from debug import DebugMenu
-from button import Button
+from UI.debug import DebugMenu
+from UI.button import Button
 from enemy import Enemy
 from item import Item
-from hotbar import Hotbar
+from UI.hotbar import Hotbar
 
 class Game():
     def __init__(self, game_active, screen, clock, window,music_manager):
@@ -16,10 +16,11 @@ class Game():
         self.clock = clock
         self.window = window
         self.screen = screen
+        
         self.music_manager = music_manager
         self.player = Player(50, 616, self.screen, self,music_manager)
         self.enemies = pygame.sprite.Group()
-        self.enemies.add(Enemy(800,700,self,self.player,'snail'))
+        self.snail = Enemy(900,700,self,self.player,'snail')
         self.hotbar = Hotbar(self.screen,self.player.inventory,self.window)
         self.items = pygame.sprite.Group()
         self.items.add(Item(400,700,5,50,'baton',self))
@@ -182,17 +183,27 @@ class Game():
                 self.enemies.draw(self.screen)
                 self.hotbar.update()
                 self.hotbar.draw()
+                nearest_enemy_data = self.player.get_nearest_enemy(self.enemies)
+
+                if self.debug.on:
+                    self.debug.update(nearest_enemy_data)
                 
+                if not any(enemy.type == 'snail' for enemy in self.enemies):
+                    new_snail = Enemy(900, 700, self, self.player, 'snail')
+                    self.enemies.add(new_snail)
 
                 enemy_hit = pygame.sprite.spritecollideany(self.player, self.enemies)
                 if enemy_hit:
                     self.player.health -= 1
                     for enemy in self.enemies: self.enemies.remove(enemy)
+                    
                     print(self.player.health)
                 else:
                     for enemy in self.enemies:
                         if self.player.rect.bottom < enemy.rect.top:
                             self.enemy_jumped = True
+                            if self.player.rect.centerx > enemy.rect.right:
+                                self.player.passed_enemy = self.enemy_jumped
                     if self.enemy_jumped and self.player.on_ground:
                         self.score += 1
                         self.enemy_jumped = False
@@ -200,7 +211,7 @@ class Game():
                 self.render_score()
             
             if self.debug.on:
-                self.debug.update()
+                self.debug.update(nearest_enemy_data)
 
             pygame.display.flip()
-            self.clock.tick(10)
+            self.clock.tick(60)

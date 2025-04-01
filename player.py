@@ -1,4 +1,5 @@
 import pygame
+from math import sqrt
 from animate import Animation
 from entity import Entity
 from player_utilities.inventory import Inventory
@@ -16,6 +17,7 @@ class Player(Entity):
         self.health = 10
         self.game = game
         self.inventory = Inventory()
+        self.passed_enemy = False
         
         #going right
         self.walking_frames = [
@@ -42,6 +44,7 @@ class Player(Entity):
     def update(self,items_group):
         
         super().update()
+
         item_touched = pygame.sprite.spritecollideany(self,items_group)
         if item_touched:
             self.inventory.add_item(item_touched)
@@ -112,3 +115,33 @@ class Player(Entity):
         else:
             self.image = self.holding_still_frame[0]
         super().draw()
+    
+    def get_nearest_enemy(self,enemies):
+        nearest_enemy = None
+        min_distance = float("inf")
+        relation_to_player = ["",""]
+
+        for enemy in enemies:
+            distance = sqrt((self.rect.centerx - enemy.rect.centerx) ** 2 + (self.rect.bottom - enemy.rect.bottom) **2)
+
+            if distance < min_distance:
+                min_distance = distance
+                nearest_enemy = enemy
+            if nearest_enemy.rect.centerx < self.rect.centerx:
+                relation_to_player[0] = "Left"
+            elif nearest_enemy.rect.centerx > self.rect.centerx:
+                relation_to_player[0] = "Right"
+            if nearest_enemy.rect.top < self.rect.bottom:
+                relation_to_player[1] = "Up"
+            elif nearest_enemy.rect.bottom > self.rect.top:
+                relation_to_player[1] = "Down"
+            if nearest_enemy.rect.bottom == self.rect.bottom:
+                relation_to_player[1] = "Level"
+
+        if nearest_enemy:
+            return {
+                "position": (nearest_enemy.rect.centerx,nearest_enemy.rect.midbottom[1]),
+                "type": nearest_enemy.type,
+                "relation_to_player": relation_to_player
+                }
+        return None

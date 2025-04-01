@@ -97,3 +97,11 @@ A 0.0.0.1.3 ---- LOG
 Fixed player starting in the sky... I knew there was a snag left behind. Hopefully that's the last of it. It seems to have been. Anyway I have implemented a hotbar with 2 items 
 added to the game with no particular order or purpose. You can control the selected hotbar slot with the # keys on the keyboard. However you can't do anything with it. This is 
 an alpha. Committing this as is tonight.
+
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+A 0.0.0.1.4 ---- LOG
+
+Added logic for calculating distance from player to nearest enemy which will be useful for enemy pathfinding later. Made those x,y values visible in the debug menu as well. I 
+also calculated the relational direction to the player of the nearest enemy. It is also displayed in the debug menu. Create UI directory for UI elements. Officially started
+Inventory UI. Empty constructor for now, but will update more.

@@ -5,10 +5,11 @@ class Entity(pygame.sprite.Sprite):
         super().__init__()
         self.image = pygame.Surface((width,height),pygame.SRCALPHA)
         self.rect = pygame.Rect(x,y,width,height)
+        
         self.screen = screen
 
     def update(self):
-        pass
+        self.world_y = self.rect.bottom - 700
 
     def draw(self):
         self.screen.blit(self.image,self.rect)

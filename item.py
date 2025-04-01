@@ -16,6 +16,7 @@ class Item(Entity):
         self.rect = self.image.get_rect(bottomleft = (x,y))
 
     def update(self):
+        super().update()
         self.rect.x = self.original_x + self.game.background_x
 
     def draw(self):

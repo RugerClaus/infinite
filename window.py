@@ -1,6 +1,5 @@
 import pygame
 from sound import SoundManager
-from debug import DebugMenu
 from button import Button
 from game import Game
 from sys import exit as ex
@@ -12,7 +11,7 @@ class Window():
         pygame.font.init()
         self.width = width
         self.height = height
-        self.version = "Alpha 0.0.0.1.12"
+        self.version = "Alpha 0.0.0.1.2"
         self.title = f"Into the SpaceHole Version {self.version}"
         pygame.display.set_caption(self.title)
         self.screen = pygame.display.set_mode((width, height))
@@ -59,7 +58,7 @@ class Window():
         # buttons
         self.music_toggle_button = Button(f"Music: {self.music_manager.music_status()}", 500, 200, 150, 50, self.button_font, button_unhovered_color, button_hovered_color, self.toggle_music)
         volume_down_button = Button(f"-",450,300,50,50,self.button_font,button_unhovered_color,button_hovered_color, self.music_volume_down)
-        level_placeholder = Button(f"{round(int(self.music_manager.volume*10), 1)}",500,300,50,50,self.button_font,button_unhovered_color,button_hovered_color,None)
+        level_placeholder = Button(f"{round(int(self.music_manager.volume*10), 1)}",500,300,50,50,self.button_font,button_unhovered_color,button_unhovered_color,None)
         volume_up_button = Button(f"+",550,300,50,50,self.button_font,button_unhovered_color,button_hovered_color, self.music_volume_up)
         self.sfx_toggle_button = Button(f"SFX: {self.music_manager.sfx_status()}", 500, 400, 150, 50, self.button_font, button_unhovered_color, button_hovered_color, self.toggle_sfx)
         back_button = Button("Back", 500, 600, 100, 50, self.button_font, button_unhovered_color, button_hovered_color, self.render_main_menu)

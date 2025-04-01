@@ -3,6 +3,7 @@ from player import Player
 from debug import DebugMenu
 from button import Button
 from enemy import Enemy
+from item import Item
 
 class Game():
     def __init__(self, game_active, screen, clock, window,music_manager):
@@ -15,10 +16,12 @@ class Game():
         self.window = window
         self.screen = screen
         self.music_manager = music_manager
-        self.player = Player(50, 700, self.screen, self,music_manager)
+        self.player = Player(50, 84, self.screen, self,music_manager)
         self.enemies = pygame.sprite.Group()
-        self.enemy = Enemy(800,700,self,self.player)
-        self.enemies.add(self.enemy)
+        self.enemies.add(Enemy(800,700,self,self.player,'snail'))
+
+        self.items = pygame.sprite.Group()
+        self.items.add(Item(400,700,5,50,'baton',self))
         self.debug = DebugMenu(self.screen,self.window,self)
         self.background_x = 0 
         self.background_speed = 3
@@ -96,15 +99,13 @@ class Game():
 
     def render_environment(self):
         self.update_background_position()
-
         sky_surface = pygame.image.load('graphics/Sky.png').convert_alpha()
-
         self.screen.blit(sky_surface, (self.background_x, 400))
         self.screen.blit(sky_surface, (self.background_x + self.screen.get_width(), 400))
-
         ground_surface = pygame.image.load('graphics/ground.png').convert_alpha()
-
         self.screen.blit(ground_surface, (self.background_x, 700))
+        for item in self.items:
+            self.screen.blit(item.image, (item.original_x + self.background_x, item.rect.y))
 
     def handle_player_input(self):
         for event in pygame.event.get():
@@ -154,19 +155,23 @@ class Game():
                 self.screen.fill((208, 244, 247))
                 self.render_environment()
                 self.handle_player_input()
-                self.player.update()
+                self.items.update()
+                self.items.draw(self.screen)
+                self.player.update(self.items)
                 self.player.draw()
                 self.enemies.update()
                 self.enemies.draw(self.screen)
 
+
                 enemy_hit = pygame.sprite.spritecollideany(self.player, self.enemies)
                 if enemy_hit:
                     self.player.health -= 1
-                    self.enemies.remove(self.enemy)
+                    for enemy in self.enemies: self.enemies.remove(enemy)
                     print(self.player.health)
                 else:
-                    if self.player.rect.bottom < self.enemy.rect.top:
-                        self.enemy_jumped = True
+                    for enemy in self.enemies:
+                        if self.player.rect.bottom < enemy.rect.top:
+                            self.enemy_jumped = True
                     if self.enemy_jumped and self.player.on_ground:
                         self.score += 1
                         self.enemy_jumped = False

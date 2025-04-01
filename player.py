@@ -1,25 +1,22 @@
 import pygame
 from animate import Animation
+from entity import Entity
+from player_utilities.inventory import Inventory
 
-class Player(pygame.sprite.Sprite):
+class Player(Entity):
     def __init__(self, x, y, screen, game,music_manager):
-        super().__init__()
+        super().__init__(x,y,64,84,screen)
         self.music_manager = music_manager
-        self.x = x
-        self.y = y
         self.speed = 0
         self.gravity = 0
         self.walking = False
         self.jumping = False
-        self.max_jump_height = 200
-        self.rect = pygame.rect.Rect(x,y,64,84)
-        self.screen = screen
         self.on_ground = True
-        self.game = game
-        self.walking_left = False
         self.was_walking = self.walking
         self.health = 10
-
+        self.game = game
+        self.inventory = Inventory()
+        
         #going right
         self.walking_frames = [
             pygame.image.load("graphics/Player/player_walk_1.png").convert_alpha(),
@@ -42,8 +39,14 @@ class Player(pygame.sprite.Sprite):
         self.holding_still_frame = [pygame.image.load("graphics/Player/player_stand.png").convert_alpha()]
         self.holding_still_animation = Animation(self.holding_still_frame,10)
         
-    def update(self):
+    def update(self,items_group):
         
+        super().update()
+        item_touched = pygame.sprite.spritecollideany(self,items_group)
+        if item_touched:
+            self.inventory.add_item(item_touched)
+            items_group.remove(item_touched)
+
         if not self.on_ground:
             self.gravity += 0.5  
             self.jumping_animation.update()
@@ -108,4 +111,4 @@ class Player(pygame.sprite.Sprite):
                 self.image = self.walking_backward_animation.get_current_frame()
         else:
             self.image = self.holding_still_frame[0]
-        self.screen.blit(self.image, self.rect)
+        super().draw()

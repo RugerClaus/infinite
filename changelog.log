@@ -76,3 +76,16 @@ A 0.0.0.1.12 ---- LOG
 Updated enemy class for basic enemy logic, and I've kind of lost it here. Gotta now come up with the game itself now that all the basic mechanics are in. Perhaps combat
 mechanics. First however I want to integrate a system for the player to interact with the world. Going to make an Item class, and create several objects to pick up as
 a proof of concept next I think.
+
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+A 0.0.0.1.2 ---- LOG
+
+Set up inventory system despite not having it graphically visible yet. It will show the items in the console. Created an entity class. Created item class. Made it so items, 
+players, and enemies are all entities. The entity class makes it so I can extend it for other entities (buttons,levers,and other interactive features in game). Still no
+real direction with this. I think I'm going for a dungeon crawler tbh. I want a part where you come to a castle's ruins and Crumbling Castle by KGATLW plays. That would be
+useful as that track and every other one on that album are in the public domain. 
+
+One more thing, I hope I didn't break any of the Player object, and if you're crazy enough to follow me or my game, then I am truly sorry. This minor update took 6 hours 
+because I was trying to invert the Y axis of the entire player interaction simply so I could A: show Y coordinates in the debug menu, and B: to leave room for a vertical 
+aspect of this game. I'm going to try again, but I'd like to flesh out other ideas first now that I have them.

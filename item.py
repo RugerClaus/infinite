@@ -9,6 +9,9 @@ class Item(Entity):
         self.name = name
         self.original_x = x
         self.original_y = y
+        #self.velocity_x = velocity_x
+        #self.velocity_y = velocity_y
+        #self.angular_velocity = angular_velocity 
         self.image = pygame.image.load(f"graphics/Items/{name}.png")
         self.rect = self.image.get_rect(bottomleft = (x,y))
 

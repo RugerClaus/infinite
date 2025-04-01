@@ -42,7 +42,6 @@ I'm trying to think of other bugs, but most of the "bugs" have been my own fault
 
 -----------------------
 
-
 Okay the biggest issue with the code so far is that it's fucking broken, but not completely because undo is a lifesaver. I knew I should have done an incremental commit at the point of adding the entity class and implementing the item and the inventory tests. I will do that now thanks to undo and the thankfully minor modification I had stupidly made to the debug class to fake it the y being inverted. 
 
 Now we come the the crux of the issue. Inverting the Y axis will be essential for me to make this game a platformer. Or at least be able to do it with some ease. I'm not sure if this is game breaking yet, regardless of what I want to do. 
@@ -50,3 +49,12 @@ Now we come the the crux of the issue. Inverting the Y axis will be essential fo
 I think in the meantime I'm going to put that project on hiatus for now. 
 
 To follow on, I would like to continue implementing the inventory system and item mechanics and working toward a combat system.
+
+------------------------
+
+An interesting mechanic would be to add some items that break depending on how high they were dropped from and others not breaking. Perhaps later some that could damage the ground. I'm getting ahead of myself here, but I'll see about giving this a try at some point. I'll need to integrate physics for falling objects at some point. Preferrably earlier in this cycle so that I can fix any game fucking bugs. That would really really ruin me. I get 3 months into this and BOOM I need to change the base layers of the game. I want to avoid that as much as I can. I worry I won't be able to get around to fixing the Y mechanics in time to make the game like that. Perhaps that could be for the better, but I'll give it a few more tries.
+
+Combat mechanics, ragdoll physics, and project scarring mechanics aside - in this update, I'd like to finish the visual interaction and useability of the inventory system. At least implementing a hotbar.
+
+-------------------------
+ I may want to make this a space themed game. I have left the mechanics and the image names open enough to do so. It's just so hard to get art, and I am a musician not a visual artist, so one half of this game's effect is taken care of (audio), but 

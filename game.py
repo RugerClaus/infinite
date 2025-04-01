@@ -4,6 +4,7 @@ from debug import DebugMenu
 from button import Button
 from enemy import Enemy
 from item import Item
+from hotbar import Hotbar
 
 class Game():
     def __init__(self, game_active, screen, clock, window,music_manager):
@@ -16,12 +17,13 @@ class Game():
         self.window = window
         self.screen = screen
         self.music_manager = music_manager
-        self.player = Player(50, 84, self.screen, self,music_manager)
+        self.player = Player(50, 616, self.screen, self,music_manager)
         self.enemies = pygame.sprite.Group()
         self.enemies.add(Enemy(800,700,self,self.player,'snail'))
-
+        self.hotbar = Hotbar(self.screen,self.player.inventory,self.window)
         self.items = pygame.sprite.Group()
         self.items.add(Item(400,700,5,50,'baton',self))
+        self.items.add(Item(2000,700,5,50,'weird space gun',self))
         self.debug = DebugMenu(self.screen,self.window,self)
         self.background_x = 0 
         self.background_speed = 3
@@ -109,9 +111,24 @@ class Game():
 
     def handle_player_input(self):
         for event in pygame.event.get():
+
             if event.type == pygame.QUIT:
                 self.window.quit_game()
             if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_1:
+                    
+                    self.hotbar.selected_index = 0
+                elif event.key == pygame.K_2:
+                    self.hotbar.selected_index = 1
+                elif event.key == pygame.K_3:
+                    self.hotbar.selected_index = 2
+                elif event.key == pygame.K_4:
+                    self.hotbar.selected_index = 3
+                elif event.key == pygame.K_5:
+                    self.hotbar.selected_index = 4
+                elif event.key == pygame.K_6:
+                    self.hotbar.selected_index = 5
+                print(f"Key Pressed: {event.key}, Setting Selected Index to: {self.hotbar.selected_index}")
                 if event.key == pygame.K_d:
                     self.player.speed = 5
                     self.player.walking = True
@@ -122,6 +139,8 @@ class Game():
                     self.player.jump()
                 elif event.key == pygame.K_ESCAPE:
                     self.paused = not self.paused
+                elif event.key == pygame.K_e: # fuck you I know. It's a good button. Why change it?
+                    self.player.inventory.display_inventory() 
                 #debug
                 elif event.key == pygame.K_F2:
                     print(f"Background left x position: {self.background_x}")
@@ -161,7 +180,9 @@ class Game():
                 self.player.draw()
                 self.enemies.update()
                 self.enemies.draw(self.screen)
-
+                self.hotbar.update()
+                self.hotbar.draw()
+                
 
                 enemy_hit = pygame.sprite.spritecollideany(self.player, self.enemies)
                 if enemy_hit:
@@ -182,4 +203,4 @@ class Game():
                 self.debug.update()
 
             pygame.display.flip()
-            self.clock.tick(60)
+            self.clock.tick(10)

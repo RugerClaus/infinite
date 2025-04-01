@@ -68,3 +68,11 @@ managing button states.
 A 0.0.0.1.1 ---- LOG
 
 Separated all classes and my modularity paid off. The program works great so far. Started implementing enemy class.
+
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+A 0.0.0.1.12 ---- LOG
+
+Updated enemy class for basic enemy logic, and I've kind of lost it here. Gotta now come up with the game itself now that all the basic mechanics are in. Perhaps combat
+mechanics. First however I want to integrate a system for the player to interact with the world. Going to make an Item class, and create several objects to pick up as
+a proof of concept next I think.

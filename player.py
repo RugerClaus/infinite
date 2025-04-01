@@ -18,6 +18,7 @@ class Player(pygame.sprite.Sprite):
         self.game = game
         self.walking_left = False
         self.was_walking = self.walking
+        self.health = 10
 
         #going right
         self.walking_frames = [

@@ -2,6 +2,7 @@ import pygame
 from player import Player
 from debug import DebugMenu
 from button import Button
+from enemy import Enemy
 
 class Game():
     def __init__(self, game_active, screen, clock, window,music_manager):
@@ -13,12 +14,16 @@ class Game():
         self.clock = clock
         self.window = window
         self.screen = screen
+        self.music_manager = music_manager
         self.player = Player(50, 700, self.screen, self,music_manager)
+        self.enemies = pygame.sprite.Group()
+        self.enemy = Enemy(800,700,self,self.player)
+        self.enemies.add(self.enemy)
         self.debug = DebugMenu(self.screen,self.window,self)
         self.background_x = 0 
         self.background_speed = 3
         self.background_scrolling = False
-        self.music_manager = music_manager
+        self.enemy_jumped = False
         self.check_state()
 
     def check_state(self):
@@ -151,6 +156,21 @@ class Game():
                 self.handle_player_input()
                 self.player.update()
                 self.player.draw()
+                self.enemies.update()
+                self.enemies.draw(self.screen)
+
+                enemy_hit = pygame.sprite.spritecollideany(self.player, self.enemies)
+                if enemy_hit:
+                    self.player.health -= 1
+                    self.enemies.remove(self.enemy)
+                    print(self.player.health)
+                else:
+                    if self.player.rect.bottom < self.enemy.rect.top:
+                        self.enemy_jumped = True
+                    if self.enemy_jumped and self.player.on_ground:
+                        self.score += 1
+                        self.enemy_jumped = False
+
                 self.render_score()
             
             if self.debug.on:

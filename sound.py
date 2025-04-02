@@ -8,7 +8,8 @@ class SoundManager:
             "game": "audio/game_music.wav"
         }
         self.sound_effects = {
-            "jump": 'audio/jump.mp3'
+            "jump": 'audio/jump.mp3',
+            "weird_space_gun_shoot": 'audio/weird_space_gun.wav'
         }
         self.volume = volume
         self.music_active = True

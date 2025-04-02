@@ -4,7 +4,7 @@ from entity import Entity
 
 class Enemy(Entity):
     def __init__(self,x,y,game,player,enemy_type):
-        super().__init__(x,y,72,36,game.screen)
+        super().__init__(game.screen,True,5)
         self.game = game
         self.player = player
         self.world_x = x

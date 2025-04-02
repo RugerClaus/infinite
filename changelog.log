@@ -119,3 +119,22 @@ A 0.0.0.1.51 ---- LOG
 
 You can add and remove things from the inventory to the hotbar and back. The scaling issue with the hotbar has been fixed. Console now displays put (item) in inventory or in hotbar
 depending on current item position stored in item. is_in_hotbar. Next changes are going to be stackable items. Perhaps food of some sort?
+
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+A 0.0.0.1.6 ---- LOG
+
+Massive update. Redid most of inventory system to now have stackable items. Added Food and Apples. Weapons have been deprecated in this version and are being reworked into the game.
+I have redesigned the entity system to be highly extensible and DRY. Saves a lot of time in the end. It is very frustrating to add stuff though. 
+
+Player Y system now still has -y up, but the ground is at 0 now, technically anyways. The world_y position on the player is all that matters for tracking motion. The actual Y is irrelevant.
+The bugs are adding up for this game, but I am doing my best every release to keep them low.
+
+The player's lack of animation continuing after landing a jump was the fact I was disabling walking.... or at least telling the Animation object that i wasn't doing so.
+I may be adding gravity to items during this next update or two, but there are bigger problems.
+
+I need to start figuring out how to get an item in the player's hand if it's in the hotbar on the selected box. It will be time to record some other sound effects like a bump sound
+for the baton and a cool sound for the weird space gun.
+
+After some careful testing after writing this, I discovered the inventory/hotbar system was unuseable. It worked when I wrote this and then I opened the game again and it broke...
+I gutted the inventory system and stuck with the implementation of the Entity class and subclasses.

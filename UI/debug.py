@@ -31,7 +31,7 @@ class DebugMenu():
     
     def update(self,nearest_enemy_data):
         if self.on:
-            player_coords = (self.game.player.rect.centerx, self.game.player.world_y)
+            player_coords = (self.game.player.world_y, self.game.player.world_y)
             debug_x = self.game.player.rect.x + abs(self.game.background_x)
             if nearest_enemy_data:
                 enemy_positon = nearest_enemy_data["position"]

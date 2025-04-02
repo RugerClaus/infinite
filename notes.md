@@ -57,4 +57,14 @@ An interesting mechanic would be to add some items that break depending on how h
 Combat mechanics, ragdoll physics, and project scarring mechanics aside - in this update, I'd like to finish the visual interaction and useability of the inventory system. At least implementing a hotbar.
 
 -------------------------
- I may want to make this a space themed game. I have left the mechanics and the image names open enough to do so. It's just so hard to get art, and I am a musician not a visual artist, so one half of this game's effect is taken care of (audio), but 
+ I may want to make this a space themed game. I have left the mechanics and the image names open enough to do so. It's just so hard to get art, and I am a musician not a visual artist, so one half of this game's effect is taken care of (audio), but the visual things are going to have to be done in MS paint. That's fine. I could use some experience with this.
+
+ Sprites are a ton easier than physical drawing, but still take talent to make good. Which ultimately means mine will be shit. Thank you, sir whoever created these assets.
+
+ I think the next thing to go will be these assets. I'll try to spend some time creating new sprites for the player and environments. 
+
+ The update I've just finished is massive. And every single little feature has been a massive hurdle, but it's been fun for sure, and the fact the game is working as well as it is right now as of alpha 0.0.0.1.6 is very satisfying.
+
+ I know I'll need to automate the spawning mechanics for the food. I think I'll have specific locations they're hidden and tie that to a level object. I feel like every time I feel I'm getting in the weeds, I realize around every corner I ain't seen shit yet.
+
+ On another note, game.py is going to be the next major overhaul and that's going to fucking break everything if I'm not careful. I have been trying not to do much with it in the last few updates, and I feel I've been successful. 

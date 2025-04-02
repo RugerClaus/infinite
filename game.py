@@ -4,8 +4,8 @@ from UI.debug import DebugMenu
 from UI.button import Button
 from enemy import Enemy
 from item import Item
-from UI.hotbar import Hotbar
-from UI.inventoryui import InventoryUI
+from food import Apple
+from weapon import Baton
 
 class Game():
     def __init__(self, game_active, screen, clock, window,music_manager):
@@ -17,17 +17,24 @@ class Game():
         self.clock = clock
         self.window = window
         self.screen = screen
-        
         self.music_manager = music_manager
-        self.player = Player(50, 616, self.screen, self,music_manager)
+        self.player = Player(self.screen, self,music_manager)
         self.enemies = pygame.sprite.Group()
         self.snail = Enemy(900,700,self,self.player,'snail')
-        self.hotbar = Hotbar(self)
+
+
+        ###### ADD ITEMS TO GAME - NEED TO AUTOMATE THIS#####
         self.items = pygame.sprite.Group()
-        self.items.add(Item(400,700,5,50,'baton',self))
-        self.items.add(Item(2000,700,5,50,'weird space gun',self))
+        self.items.add(Apple(self))
+        self.items.add(Apple(self))
+        self.items.add(Apple(self))
+        self.items.add(Apple(self))
+        self.items.add(Apple(self))
+        self.items.add(Apple(self))
+        self.items.add(Apple(self))
+        self.items.add(Apple(self))
+
         self.debug = DebugMenu(self.screen,self.window,self)
-        self.inventory_ui = InventoryUI(self)
         self.background_x = 0 
         self.background_speed = 3
         self.background_scrolling = False
@@ -49,7 +56,7 @@ class Game():
 
     def render_score(self):
         score_surface = self.score_font.render(f'Score: {self.score}', True, (64, 64, 64))
-        self.screen.blit(score_surface, (866, 5))
+        self.screen.blit(score_surface, (850, 5))
 
     def render_pause_menu(self):
         self.paused = True
@@ -109,8 +116,6 @@ class Game():
         self.screen.blit(sky_surface, (self.background_x + self.screen.get_width(), 400))
         ground_surface = pygame.image.load('graphics/ground.png').convert_alpha()
         self.screen.blit(ground_surface, (self.background_x, 700))
-        for item in self.items:
-            self.screen.blit(item.image, (item.original_x + self.background_x, item.rect.y))
 
     def handle_player_input(self):
         for event in pygame.event.get():
@@ -219,11 +224,6 @@ class Game():
 
                 self.render_score()
 
-                self.inventory_ui.draw()
-                self.inventory_ui.handle_input(pygame.mouse.get_pos())
-                self.hotbar.draw()
-                self.hotbar.handle_input(pygame.mouse.get_pos())
-            
             if self.debug.on:
                 self.debug.update(nearest_enemy_data)
 

@@ -138,3 +138,19 @@ for the baton and a cool sound for the weird space gun.
 
 After some careful testing after writing this, I discovered the inventory/hotbar system was unuseable. It worked when I wrote this and then I opened the game again and it broke...
 I gutted the inventory system and stuck with the implementation of the Entity class and subclasses.
+
+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+A 0.0.0.1.61 ---- LOG
+
+Created a new inventory system. It opens and closes and the rows are rendered independently. The first row is the hotbar, and I am tracking not only the index of the slots, but also
+the selected slot index of the hotbar. I'll probably need to add something similar for the mouse hovering over the inventory boxes next. I wanted to commit now since the system is kind
+of working more or less. I have removed player detection for item collisions. I am going to implement a collision class that will check entities for collisions and update the game
+accordingly. 
+
+I'm looking to now add stacking. The items themselves have a stackable property (is_stackable). I'm not looking to implement stack limits for now, but if I leave it out now,
+I'll kind of be stuck with a system that can't limit stacking. There are games that don't so I'll have to remember to balance that. This is one of those crossroads decisions. 
+
+I was going to add that. 
+
+Removed scoring system as it won't be necessary for now. Moved the debug menu to appear in the top right of the window when activated.

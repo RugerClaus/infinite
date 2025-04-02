@@ -4,7 +4,7 @@ class DebugMenu():
     def __init__(self,screen,window,game):
         self.on = False
         self.surface = pygame.surface.Surface((250,100))
-        self.rect = self.surface.get_rect()
+        self.rect = self.surface.get_rect(bottomleft = (750,100))
         self.win = window
         self.game = game
         self.screen = screen

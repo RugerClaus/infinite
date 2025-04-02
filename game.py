@@ -6,14 +6,13 @@ from enemy import Enemy
 from item import Item
 from food import Apple
 from weapon import Baton
+from UI.inventory import Inventory
 
 class Game():
     def __init__(self, game_active, screen, clock, window,music_manager):
         self.paused = False
         self.game_active = game_active
         self.pause_button_font = pygame.font.Font('font/Pixeltype.ttf', 40)
-        self.score_font = pygame.font.Font('font/Pixeltype.ttf', 50)
-        self.score = 0
         self.clock = clock
         self.window = window
         self.screen = screen
@@ -21,6 +20,11 @@ class Game():
         self.player = Player(self.screen, self,music_manager)
         self.enemies = pygame.sprite.Group()
         self.snail = Enemy(900,700,self,self.player,'snail')
+        self.inventory = Inventory()
+        self.inventory.add_item(Apple(self))
+        self.inventory.add_item(Apple(self))
+        self.inventory.add_item(Apple(self))
+        self.inventory.add_item(Apple(self))
 
 
         ###### ADD ITEMS TO GAME - NEED TO AUTOMATE THIS#####
@@ -53,10 +57,6 @@ class Game():
     def reset(self):
         self.score = 0
         self.player.reset()
-
-    def render_score(self):
-        score_surface = self.score_font.render(f'Score: {self.score}', True, (64, 64, 64))
-        self.screen.blit(score_surface, (850, 5))
 
     def render_pause_menu(self):
         self.paused = True
@@ -124,27 +124,21 @@ class Game():
                 self.window.quit_game()
             if event.type == pygame.MOUSEWHEEL:
                 if event.y == -1:
-                    self.hotbar.selected_index += 1
+                    if self.inventory.selected_hotbar_slot < 4:
+                        self.inventory.selected_hotbar_slot += 1
+                    else:
+                        self.inventory.selected_hotbar_slot = 0
+                    print(self.inventory.selected_hotbar_slot)
                 else:
-                    self.hotbar.selected_index -= 1
-                if self.hotbar.selected_index > 5:
-                    self.hotbar.selected_index = 0
-                elif self.hotbar.selected_index < 0:
-                    self.hotbar.selected_index = 5
+                    if self.inventory.selected_hotbar_slot > 0:
+                        self.inventory.selected_hotbar_slot -= 1
+                    else:
+                        self.inventory.selected_hotbar_slot = 4
+                    print(self.inventory.selected_hotbar_slot)
                 #print(f"Direction Scrolled: {event.y}, Setting Selected Index to: {self.hotbar.selected_index}")
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_1:
-                    self.hotbar.selected_index = 0
-                elif event.key == pygame.K_2:
-                    self.hotbar.selected_index = 1
-                elif event.key == pygame.K_3:
-                    self.hotbar.selected_index = 2
-                elif event.key == pygame.K_4:
-                    self.hotbar.selected_index = 3
-                elif event.key == pygame.K_5:
-                    self.hotbar.selected_index = 4
-                elif event.key == pygame.K_6:
-                    self.hotbar.selected_index = 5
+                    print(self.inventory.selected_hotbar_slot)
                 #print(f"Key Pressed: {event.key}, Setting Selected Index to: {self.hotbar.selected_index}")
                 if event.key == pygame.K_d:
                     self.player.speed = 5
@@ -157,7 +151,7 @@ class Game():
                 elif event.key == pygame.K_ESCAPE:
                     self.paused = not self.paused
                 elif event.key == pygame.K_e: # fuck you I know. It's a good button. Why change it?
-                    self.inventory_ui.toggle_inventory() 
+                    self.inventory.toggle_inventory()
                 #debug
                 elif event.key == pygame.K_F2:
                     print(f"Background left x position: {self.background_x}")
@@ -197,6 +191,7 @@ class Game():
                 self.player.draw()
                 self.enemies.update()
                 self.enemies.draw(self.screen)
+                self.inventory.render(self.screen)
                 nearest_enemy_data = self.player.get_nearest_enemy(self.enemies)
 
                 if self.debug.on:
@@ -219,10 +214,8 @@ class Game():
                             if self.player.rect.centerx > enemy.rect.right:
                                 self.player.passed_enemy = self.enemy_jumped
                     if self.enemy_jumped and self.player.on_ground:
-                        self.score += 1
                         self.enemy_jumped = False
-
-                self.render_score()
+                
 
             if self.debug.on:
                 self.debug.update(nearest_enemy_data)

@@ -32,9 +32,13 @@ class Item(Entity):
                 self.rect.y = self.world_y
 
     def collect(self):
-        """Call this method when the item is collected."""
         self.collected = True
         self.rect.x = -100
         self.rect.y = -100
         self.game.items.remove(self)
         
+    
+    def delete_self(self):
+        if self in self.game.items:
+            self.game.items.remove(self)
+        del self  # Python will clean up if no references remain

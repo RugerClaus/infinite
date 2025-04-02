@@ -20,23 +20,17 @@ class Game():
         self.player = Player(self.screen, self,music_manager)
         self.enemies = pygame.sprite.Group()
         self.snail = Enemy(900,700,self,self.player,'snail')
-        self.inventory = Inventory()
-        self.inventory.add_item(Apple(self))
-        self.inventory.add_item(Apple(self))
-        self.inventory.add_item(Apple(self))
-        self.inventory.add_item(Apple(self))
+        self.inventory = Inventory(self.window)
+
 
 
         ###### ADD ITEMS TO GAME - NEED TO AUTOMATE THIS#####
         self.items = pygame.sprite.Group()
-        self.items.add(Apple(self))
-        self.items.add(Apple(self))
-        self.items.add(Apple(self))
-        self.items.add(Apple(self))
-        self.items.add(Apple(self))
-        self.items.add(Apple(self))
-        self.items.add(Apple(self))
-        self.items.add(Apple(self))
+        self.inventory.add_item(Apple(self))
+        self.inventory.add_item(Apple(self))
+        self.inventory.add_item(Apple(self))
+        self.inventory.add_item(Baton(self))
+        
 
         self.debug = DebugMenu(self.screen,self.window,self)
         self.background_x = 0 
@@ -123,6 +117,7 @@ class Game():
             if event.type == pygame.QUIT:
                 self.window.quit_game()
             if event.type == pygame.MOUSEWHEEL:
+                self.inventory.select_hotbar_slot(self.inventory.selected_hotbar_slot)
                 if event.y == -1:
                     if self.inventory.selected_hotbar_slot < 4:
                         self.inventory.selected_hotbar_slot += 1
@@ -154,8 +149,9 @@ class Game():
                     self.inventory.toggle_inventory()
                 #debug
                 elif event.key == pygame.K_F2:
-                    print(f"Background left x position: {self.background_x}")
-                    print(f"player center x position: {self.player.rect.x}")
+                    self.inventory.add_item(Baton(self))
+                elif event.key == pygame.K_F3:
+                    self.inventory.remove_item()
                 elif event.key == pygame.K_F9:
                     if not self.debug.on:
                         self.debug.start()

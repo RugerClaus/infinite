@@ -79,6 +79,11 @@ a proof of concept next I think.
 
 ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
+########BEGIN########
+######INVENTORY######
+#####DEVELOPMENT#####
+
+----------------------
 A 0.0.0.1.2 ---- LOG
 
 Set up inventory system despite not having it graphically visible yet. It will show the items in the console. Created an entity class. Created item class. Made it so items, 
@@ -154,3 +159,12 @@ I'll kind of be stuck with a system that can't limit stacking. There are games t
 I was going to add that. 
 
 Removed scoring system as it won't be necessary for now. Moved the debug menu to appear in the top right of the window when activated.
+
+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+A 0.0.0.1.62
+
+I have now integrated the baton in the items system so loading it in may be a challenge later along with other items. For now I'm focused on the inventory functionality and am trying
+to avoid overlapping with other features, which is tough because inventory works with items and the player.
+
+Committing this version now before I implement a drag and drop system for the inventory

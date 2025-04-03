@@ -4,8 +4,7 @@ from UI.debug import DebugMenu
 from UI.button import Button
 from enemy import Enemy
 from item import Item
-from food import Apple
-from weapon import Baton
+from weapon import LaserRifle,RedLaserRifle
 
 class Game():
     def __init__(self, game_active, screen, clock, window,music_manager):
@@ -19,6 +18,10 @@ class Game():
         self.player = Player(self.screen, self,music_manager)
         self.enemies = pygame.sprite.Group()
         self.snail = Enemy(900,700,self,self.player,'snail')
+        self.player.primary_weapon = LaserRifle(self)
+        self.player.secondary_weapon = RedLaserRifle(self)
+        self.player.active_weapon = self.player.primary_weapon
+        
 
 
 
@@ -104,14 +107,33 @@ class Game():
         ground_surface = pygame.image.load('graphics/ground.png').convert_alpha()
         self.screen.blit(ground_surface, (self.background_x, 700))
 
+    def render_hotbar(self):
+        hotbar_x, hotbar_y = 10, self.screen.get_height() - 100  # Example position
+        weapon_offset_x = 60  # Space between weapons
+        
+        # Display the two weapons (assuming self.player.primary_weapon and self.player.secondary_weapon)
+        weapons = [self.player.primary_weapon, self.player.secondary_weapon]
+
+        for index, weapon in enumerate(weapons):
+            weapon_x = hotbar_x + index * weapon_offset_x
+            weapon_rect = weapon.image_right.get_rect(topleft=(weapon_x, hotbar_y))
+            self.screen.blit(weapon.image_right, weapon_rect)
+            
+            # Highlight the selected weapon (for example, we use a simple border)
+            if self.player.active_weapon == weapon:
+                pygame.draw.rect(self.screen, (255, 255, 0), weapon_rect, 5)  # Yellow border for active weapon
+
     def handle_player_input(self):
         for event in pygame.event.get():
 
             if event.type == pygame.QUIT:
                 self.window.quit_game()
             if event.type == pygame.MOUSEWHEEL:
-                pass
-                #print(f"Direction Scrolled: {event.y}, Setting Selected Index to: {self.hotbar.selected_index}")
+                if event.y > 0:
+                    self.player.active_weapon = self.player.primary_weapon
+                elif event.y < 0:
+                    self.player.active_weapon = self.player.secondary_weapon
+                    print("switch weapon")
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_1:
                     pass
@@ -143,6 +165,9 @@ class Game():
                     self.player.speed = 0
                     self.player.was_walking = self.player.walking
                     self.player.walking = False
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                if event.button == 1:
+                    self.player.attack()
     def game_loop(self):
         while self.game_active:
             if self.music_manager.music_status() == "On":
@@ -167,6 +192,7 @@ class Game():
                 self.player.draw()
                 self.enemies.update()
                 self.enemies.draw(self.screen)
+                self.render_hotbar()
                 nearest_enemy_data = self.player.get_nearest_enemy(self.enemies)
 
                 if self.debug.on:

@@ -9,7 +9,7 @@ class SoundManager:
         }
         self.sound_effects = {
             "jump": 'audio/jump.mp3',
-            "weird_space_gun_shoot": 'audio/weird_space_gun.wav'
+            "plasma_rifle": 'audio/weird_space_gun.wav'
         }
         self.volume = volume
         self.music_active = True
@@ -51,6 +51,7 @@ class SoundManager:
 
     def play_sfx(self, sfx_name):
         if self.sfx_active and sfx_name in self.sound_effects:
+            print("playing sound")
             sfx = pygame.mixer.Sound(self.sound_effects[sfx_name])
             sfx.set_volume(self.volume)
             sfx.play()

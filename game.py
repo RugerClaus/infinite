@@ -18,16 +18,14 @@ class Game():
         self.player = Player(self.screen, self,music_manager)
         self.enemies = pygame.sprite.Group()
         self.snail = Enemy(900,700,self,self.player,'snail')
-        self.player.primary_weapon = LaserRifle(self)
-        self.player.secondary_weapon = RedLaserRifle(self)
-        self.player.active_weapon = self.player.primary_weapon
         
 
 
 
         ###### ADD ITEMS TO GAME - NEED TO AUTOMATE THIS#####
         self.items = pygame.sprite.Group()
-        
+        self.items.add(LaserRifle(self))
+        self.items.add(RedLaserRifle(self))
         self.debug = DebugMenu(self.screen,self.window,self)
         self.background_x = 0 
         self.background_speed = 3
@@ -107,21 +105,37 @@ class Game():
         ground_surface = pygame.image.load('graphics/ground.png').convert_alpha()
         self.screen.blit(ground_surface, (self.background_x, 700))
 
-    def render_hotbar(self):
-        hotbar_x, hotbar_y = 10, self.screen.get_height() - 100  # Example position
-        weapon_offset_x = 60  # Space between weapons
-        
-        # Display the two weapons (assuming self.player.primary_weapon and self.player.secondary_weapon)
-        weapons = [self.player.primary_weapon, self.player.secondary_weapon]
-
-        for index, weapon in enumerate(weapons):
-            weapon_x = hotbar_x + index * weapon_offset_x
-            weapon_rect = weapon.image_right.get_rect(topleft=(weapon_x, hotbar_y))
-            self.screen.blit(weapon.image_right, weapon_rect)
+    def handle_item_collection(self):
+        # Check if the player collides with any item
+        item_hit = pygame.sprite.spritecollideany(self.player, self.items)
+        if item_hit:
+            item_hit.collect()  # This will move the item out of the game world
+            # Optionally, you could also add the item to the player's inventory here
+            print(f"Collected item: {item_hit.name}")
             
-            # Highlight the selected weapon (for example, we use a simple border)
-            if self.player.active_weapon == weapon:
-                pygame.draw.rect(self.screen, (255, 255, 0), weapon_rect, 5)  # Yellow border for active weapon
+
+    def render_hotbar(self):
+        hotbar_x, hotbar_y = 10, 0
+        weapon_offset_x = 60 
+
+        if not self.player.primary_weapon and not self.player.secondary_weapon:
+            placeholder_image = pygame.Surface((50, 50))
+            placeholder_image.fill((169, 169, 169)) 
+            self.screen.blit(placeholder_image, (hotbar_x, hotbar_y))
+            self.screen.blit(placeholder_image, (hotbar_x + weapon_offset_x, hotbar_y))
+        else:
+
+            weapons = [self.player.primary_weapon, self.player.secondary_weapon]
+
+            for index, weapon in enumerate(weapons):
+                if weapon:
+                    weapon_x = hotbar_x + index * weapon_offset_x
+                    weapon_rect = weapon.image_right.get_rect(topleft=(weapon_x, hotbar_y))
+                    self.screen.blit(weapon.image_right, weapon_rect)
+
+                    if self.player.active_weapon == weapon:
+                        pygame.draw.rect(self.screen, (0, 0, 0), weapon_rect, 5) 
+
 
     def handle_player_input(self):
         for event in pygame.event.get():
@@ -129,11 +143,7 @@ class Game():
             if event.type == pygame.QUIT:
                 self.window.quit_game()
             if event.type == pygame.MOUSEWHEEL:
-                if event.y > 0:
-                    self.player.active_weapon = self.player.primary_weapon
-                elif event.y < 0:
-                    self.player.active_weapon = self.player.secondary_weapon
-                    print("switch weapon")
+                self.player.switch_weapons()
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_1:
                     pass
@@ -193,6 +203,7 @@ class Game():
                 self.enemies.update()
                 self.enemies.draw(self.screen)
                 self.render_hotbar()
+                self.handle_item_collection()
                 nearest_enemy_data = self.player.get_nearest_enemy(self.enemies)
 
                 if self.debug.on:

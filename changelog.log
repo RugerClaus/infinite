@@ -171,6 +171,10 @@ Committing this version now before I implement a drag and drop system for the in
 
 -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
+CANCELLED INVENTORY DEVELOPMENT FOR OTHER ASPECTS
+
+----------------------------
+
 A 0.0.0.1.65 ---- LOG
 
 So I've decided implementing an inventory system has been a disaster. I'll have to practice with it in another project. Forwards we go. I'm thinking about doing a bit of a shoot em
@@ -182,3 +186,11 @@ A 0.0.0.1.7 ---- LOG
 
 So I have started implementing the weapon systems. I have 2 weapons in here now, The Laser rifle and the Red Laser rifle... Fuck you I know. You can equip them and fire them. Need to
 make it so the game doesn't crash when the player doesn't have one tho
+
+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+A 0.0.0.1.8 ---- LOG 
+
+Restructured Item object to more easily accomodate weapons and other subclasses of items. Fixed loading image locations to the Item object taking into account the item type.
+
+Added extendable functionality to pick up weapons. Next will be switching weapons. I'll need to add more weapons.

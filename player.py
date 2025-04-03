@@ -2,6 +2,7 @@ import pygame
 import math
 from animate import Animation
 from entity import Entity
+from weapon import Weapon
 
 class Player(Entity):
     def __init__(self, screen, game, music_manager):
@@ -18,6 +19,7 @@ class Player(Entity):
         self.secondary_weapon = None
         self.active_weapon = None
         self.grenades = 0
+        self.inventory = []
 
         # Animations
         self.set_animation("idle", Animation([pygame.image.load("graphics/Player/player_stand.png").convert_alpha()], 10))
@@ -31,6 +33,18 @@ class Player(Entity):
         ], 10))
         self.set_animation("jump_right", Animation([pygame.image.load("graphics/Player/jump.png").convert_alpha()], 10))
         self.set_animation("jump_left", Animation([pygame.image.load("graphics/Player/jump_back.png").convert_alpha()], 10))
+
+    def add_to_inventory(self,item):
+        if isinstance(item, Weapon):  # Check if the item is a weapon
+            if not self.primary_weapon:
+                self.primary_weapon = item
+                self.active_weapon = self.primary_weapon
+            elif not self.secondary_weapon:
+                self.secondary_weapon = item
+            else:
+                # If both slots are full, replace the current active weapon
+                self.active_weapon = item  # Replace active weapon to the new one
+            print(f"{item.name} added to loadout and set as active weapon")
 
     def update(self, items_group):
         self.world_x = self.rect.centerx
@@ -70,7 +84,7 @@ class Player(Entity):
     def land(self):
         self.on_ground = True
         if self.was_walking:
-            self.walking = True  # Continue walking after landing if it was happening before
+            self.walking = True
 
     def draw(self):
         super().draw()
@@ -82,19 +96,21 @@ class Player(Entity):
             dy = mouse_y - self.rect.centery
             angle = math.degrees(math.atan2(dy,dx))
 
-            facing_right = dx >= 0
+            facing_right = dx >= 0 and self.speed >= 0
             self.active_weapon.update_image(facing_right)
 
             weapon_offset_x = 20 if facing_right else -60
-            weapon_offset_y = 0  # Adjust vertical position (move up/down)
+            weapon_offset_y = 0
             weapon_x = self.rect.centerx + weapon_offset_x
             weapon_y = self.rect.centery + weapon_offset_y
             if facing_right:
                 rotated_weapon = pygame.transform.rotate(self.active_weapon.image, -angle)
             else:
-                rotated_weapon = pygame.transform.rotate(self.active_weapon.image, - (angle + 180))
+                rotated_weapon = pygame.transform.rotate(self.active_weapon.image, - angle + 180)
             weapon_rect = rotated_weapon.get_rect(center=(weapon_x + 15,weapon_y + 15))
             self.screen.blit(rotated_weapon,weapon_rect.topleft)
+        else:
+            print("no active weapon")
 
     def get_nearest_enemy(self, enemies):
         nearest_enemy = None
@@ -133,7 +149,6 @@ class Player(Entity):
                 print(f"Switched to: {self.active_weapon.name}")
 
     def pick_up_weapon(self, weapon):
-        """Handles picking up weapons."""
         if not self.primary_weapon:
             self.primary_weapon = weapon
             self.active_weapon = self.primary_weapon

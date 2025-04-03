@@ -11,11 +11,11 @@ class Weapon(Item):
         self.damage = damage
 
 class Baton(Weapon):
-    def __init__(self,game,x,y):
+    def __init__(self,game):
         damage = 10
         self.name = "baton"
-        self.x = x
-        self.y = y
+        self.x = 800
+        self.y = 700
         super().__init__(self.x,self.y,self.name,game,damage)
 
     def draw(self):

@@ -168,3 +168,10 @@ I have now integrated the baton in the items system so loading it in may be a ch
 to avoid overlapping with other features, which is tough because inventory works with items and the player.
 
 Committing this version now before I implement a drag and drop system for the inventory
+
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+A 0.0.0.1.65
+
+So I've decided implementing an inventory system has been a disaster. I'll have to practice with it in another project. Forwards we go. I'm thinking about doing a bit of a shoot em
+up platformer with a science fiction theme. I'm going to dumb the item system down to 2 slots for weapons, 1 for throwables.

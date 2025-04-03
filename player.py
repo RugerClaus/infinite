@@ -15,11 +15,9 @@ class Player(Entity):
         self.image = pygame.image.load(f"graphics/Player/player_stand.png").convert_alpha()
         self.rect = self.image.get_rect()
         self.rect.bottom = 700
-        self.primary_weapon = None
-        self.secondary_weapon = None
+        
+        self.inventory = {"primary":None,"secondary":None}
         self.active_weapon = None
-        self.grenades = 0
-        self.inventory = []
 
         # Animations
         self.set_animation("idle", Animation([pygame.image.load("graphics/Player/player_stand.png").convert_alpha()], 10))
@@ -33,18 +31,6 @@ class Player(Entity):
         ], 10))
         self.set_animation("jump_right", Animation([pygame.image.load("graphics/Player/jump.png").convert_alpha()], 10))
         self.set_animation("jump_left", Animation([pygame.image.load("graphics/Player/jump_back.png").convert_alpha()], 10))
-
-    def add_to_inventory(self,item):
-        if isinstance(item, Weapon):  # Check if the item is a weapon
-            if not self.primary_weapon:
-                self.primary_weapon = item
-                self.active_weapon = self.primary_weapon
-            elif not self.secondary_weapon:
-                self.secondary_weapon = item
-            else:
-                # If both slots are full, replace the current active weapon
-                self.active_weapon = item  # Replace active weapon to the new one
-            print(f"{item.name} added to loadout and set as active weapon")
 
     def update(self, items_group):
         self.world_x = self.rect.centerx
@@ -89,12 +75,10 @@ class Player(Entity):
     def draw(self):
         super().draw()
         if self.active_weapon:
-
             mouse_x, mouse_y = pygame.mouse.get_pos()
-
             dx = mouse_x - self.rect.centerx
             dy = mouse_y - self.rect.centery
-            angle = math.degrees(math.atan2(dy,dx))
+            angle = math.degrees(math.atan2(dy, dx))
 
             facing_right = dx >= 0 and self.speed >= 0
             self.active_weapon.update_image(facing_right)
@@ -106,11 +90,21 @@ class Player(Entity):
             if facing_right:
                 rotated_weapon = pygame.transform.rotate(self.active_weapon.image, -angle)
             else:
-                rotated_weapon = pygame.transform.rotate(self.active_weapon.image, - angle + 180)
-            weapon_rect = rotated_weapon.get_rect(center=(weapon_x + 15,weapon_y + 15))
-            self.screen.blit(rotated_weapon,weapon_rect.topleft)
+                rotated_weapon = pygame.transform.rotate(self.active_weapon.image, -angle + 180)
+            weapon_rect = rotated_weapon.get_rect(center=(weapon_x + 15, weapon_y + 15))
+            self.screen.blit(rotated_weapon, weapon_rect.topleft)
         else:
-            print("no active weapon")
+            print("No active weapon")
+
+    def switch_weapons(self):
+        if self.inventory["primary"] and self.inventory["secondary"]:
+            self.active_weapon = self.inventory["primary"] if self.active_weapon == self.inventory["secondary"] else self.inventory["secondary"]
+            print(f"Switched to: {self.active_weapon.canonical_name}")
+
+    def attack(self):
+        if self.active_weapon:
+            self.active_weapon.use()
+
 
     def get_nearest_enemy(self, enemies):
         nearest_enemy = None
@@ -142,46 +136,3 @@ class Player(Entity):
             }
         
         return None
-
-    def switch_weapons(self):
-            if self.primary_weapon and self.secondary_weapon:
-                self.active_weapon = self.primary_weapon if self.active_weapon == self.secondary_weapon else self.secondary_weapon
-                print(f"Switched to: {self.active_weapon.name}")
-
-    def pick_up_weapon(self, weapon):
-        if not self.primary_weapon:
-            self.primary_weapon = weapon
-            self.active_weapon = self.primary_weapon
-        elif not self.secondary_weapon:
-            self.secondary_weapon = weapon
-        else:
-            # If both slots are full, replace the currently active weapon
-            print(f"Replacing {self.active_weapon.name} with {weapon.name}")
-            if self.active_weapon == self.primary_weapon:
-                self.primary_weapon = weapon
-            else:
-                self.secondary_weapon = weapon
-            self.active_weapon = weapon  # Switch to the new weapon
-
-    def drop_weapon(self):
-        if self.active_weapon:
-            print(f"Dropped {self.active_weapon.name}")
-            dropped_weapon = self.active_weapon
-            if self.active_weapon == self.primary_weapon:
-                self.primary_weapon = None
-            else:
-                self.secondary_weapon = None
-            self.active_weapon = self.primary_weapon or self.secondary_weapon
-            return dropped_weapon
-
-    def swap_weapon(self,weapon):
-        if self.active_weapon == self.primary_weapon:
-            self.primary_weapon = weapon
-            self.active_weapon = self.primary_weapon
-        else:
-            self.secondary_weapon = weapon
-            self.active_weapon = self.secondary_weapon
-
-    def attack(self):
-        if self.active_weapon:
-            self.active_weapon.use()

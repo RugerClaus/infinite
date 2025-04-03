@@ -40,15 +40,6 @@ class Item(Entity):
             else:
                 self.rect.x = self.world_x
                 self.rect.y = self.world_y
-
-    def collect(self):
-        self.collected = True
-        self.game.player.add_to_inventory(self)
-        self.rect.x = -100
-        self.rect.y = -100
-        self.game.items.remove(self)
-
-    def delete_self(self):
-        if self in self.game.items:
-            self.game.items.remove(self)
-        del self
+        else:
+            self.collected = False
+            self.kill()

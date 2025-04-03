@@ -4,7 +4,8 @@ from UI.debug import DebugMenu
 from UI.button import Button
 from enemy import Enemy
 from item import Item
-from weapon import LaserRifle,RedLaserRifle
+from weapon import *
+from UI.ui import UI
 
 class Game():
     def __init__(self, game_active, screen, clock, window,music_manager):
@@ -18,6 +19,7 @@ class Game():
         self.player = Player(self.screen, self,music_manager)
         self.enemies = pygame.sprite.Group()
         self.snail = Enemy(900,700,self,self.player,'snail')
+        self.ui = UI(self)
         
 
 
@@ -26,6 +28,7 @@ class Game():
         self.items = pygame.sprite.Group()
         self.items.add(LaserRifle(self))
         self.items.add(RedLaserRifle(self))
+        self.items.add(Magnum(self))
         self.debug = DebugMenu(self.screen,self.window,self)
         self.background_x = 0 
         self.background_speed = 3
@@ -105,36 +108,78 @@ class Game():
         ground_surface = pygame.image.load('graphics/ground.png').convert_alpha()
         self.screen.blit(ground_surface, (self.background_x, 700))
 
+    # def handle_item_collection(self):
+    #     # Check if the player collides with any item
+    #     item_hit = pygame.sprite.spritecollideany(self.player, self.items)
+
     def handle_item_collection(self):
         # Check if the player collides with any item
         item_hit = pygame.sprite.spritecollideany(self.player, self.items)
-        if item_hit:
-            item_hit.collect()  # This will move the item out of the game world
-            # Optionally, you could also add the item to the player's inventory here
-            print(f"Collected item: {item_hit.name}")
-            
+        
+        if item_hit:  # If there is a collision with an item
+            if self.player.inventory["primary"] is None or self.player.inventory["secondary"] is None:  # Allow picking up if there is space
+                self.ui.show_prompt(f"Press E to pick up {item_hit.canonical_name}:", item_hit.image, False)
+            else:  # If inventory is full
+                self.ui.show_prompt(f"Press E to swap {self.player.active_weapon.canonical_name} for {item_hit.name}", item_hit.image, True)
+
+        if item_hit and pygame.key.get_pressed()[pygame.K_e]:  # If 'E' is pressed and an item is hit
+            if self.player.inventory["primary"] is None:  # Check if there's space in the primary slot
+                self.player.inventory['primary'] = item_hit  # Add item to inventory
+                self.player.active_weapon = item_hit  # Set as active weapon
+                self.items.remove(item_hit)  # Remove item from the world
+                self.ui.show_prompt(f"Picked up {item_hit.name}!", item_hit.image, False)  # Update prompt
+
+            elif self.player.inventory["secondary"] is None:  # If inventory is full
+                self.player.inventory["secondary"] = item_hit  # Add item to inventory
+                self.player.active_weapon = item_hit  # Set as active weapon
+                self.items.remove(item_hit)  # Remove item from the world
+                self.ui.show_prompt(f"Picked up {item_hit.name}!", item_hit.image, False)  # Update prompt
+                
+            else:  # If both inventory slots are full, swap items
+                if isinstance(item_hit, Weapon):  # Only swap if the item is a weapon
+                    current_weapon = self.player.inventory["primary"] if self.player.active_weapon == self.player.inventory["primary"] else self.player.inventory["secondary"]
+                    
+                    if current_weapon == self.player.inventory["primary"]:
+                        self.player.inventory["primary"] = item_hit
+                    else:
+                        self.player.inventory["secondary"] = item_hit
+
+                    self.player.active_weapon = item_hit  # Set new item as active weapon
+                    item_hit.collected = True
+
+                    # Remove the current weapon from the world and place it on the ground
+                    if current_weapon in self.items:  # Ensure the current weapon is in the world before removing
+                        current_weapon.collected = False
+                        self.items.remove(current_weapon)
+                        
+                    if current_weapon not in self.items:
+                        self.items.add(current_weapon)  # Add it back to the items group to be rendered on the ground
+
+                    # Update the UI prompt
+                    self.ui.show_prompt(f"Swapped {current_weapon.canonical_name} for {item_hit.name}", item_hit.image, True)
+
 
     def render_hotbar(self):
         hotbar_x, hotbar_y = 10, 0
         weapon_offset_x = 60 
+        weapons = [self.player.inventory["primary"], self.player.inventory["secondary"]]
 
-        if not self.player.primary_weapon and not self.player.secondary_weapon:
-            placeholder_image = pygame.Surface((50, 50))
-            placeholder_image.fill((169, 169, 169)) 
-            self.screen.blit(placeholder_image, (hotbar_x, hotbar_y))
-            self.screen.blit(placeholder_image, (hotbar_x + weapon_offset_x, hotbar_y))
-        else:
+        print(f"Active Weapon: {self.player.active_weapon}")
+        print(f"Primary Weapon: {self.player.inventory["primary"]}")
+        print(f"Secondary Weapon: {self.player.inventory["secondary"]}")
 
-            weapons = [self.player.primary_weapon, self.player.secondary_weapon]
+        for index, weapon in enumerate(weapons):
+            if weapon:
+                weapon_x = hotbar_x + index * weapon_offset_x
+                weapon_rect = weapon.image_right.get_rect(topleft=(weapon_x, hotbar_y))
+                self.screen.blit(weapon.image_right, weapon_rect)
 
-            for index, weapon in enumerate(weapons):
-                if weapon:
-                    weapon_x = hotbar_x + index * weapon_offset_x
-                    weapon_rect = weapon.image_right.get_rect(topleft=(weapon_x, hotbar_y))
-                    self.screen.blit(weapon.image_right, weapon_rect)
-
-                    if self.player.active_weapon == weapon:
-                        pygame.draw.rect(self.screen, (0, 0, 0), weapon_rect, 5) 
+                if self.player.active_weapon == weapon:
+                    pygame.draw.rect(self.screen, (0, 0, 0), weapon_rect, 5)  # Highlight active weapon
+            else:
+                placeholder_image = pygame.Surface((50, 50))
+                placeholder_image.fill((169, 169, 169))  # Gray placeholder for empty slots
+                self.screen.blit(placeholder_image, (hotbar_x + index * weapon_offset_x, hotbar_y))
 
 
     def handle_player_input(self):
@@ -160,7 +205,6 @@ class Game():
                     self.paused = not self.paused
                 elif event.key == pygame.K_e:
                     pass
-                #debug
                 elif event.key == pygame.K_F2:
                     pass
                 elif event.key == pygame.K_F3:
@@ -202,16 +246,17 @@ class Game():
                 self.player.draw()
                 self.enemies.update()
                 self.enemies.draw(self.screen)
-                self.render_hotbar()
+                
                 self.handle_item_collection()
+                self.render_hotbar()
                 nearest_enemy_data = self.player.get_nearest_enemy(self.enemies)
 
                 if self.debug.on:
                     self.debug.update(nearest_enemy_data)
                 
-                if not any(enemy.type == 'snail' for enemy in self.enemies):
-                    new_snail = Enemy(900, 700, self, self.player, 'snail')
-                    self.enemies.add(new_snail)
+                # if not any(enemy.type == 'snail' for enemy in self.enemies):
+                #     new_snail = Enemy(900, 700, self, self.player, 'snail')
+                #     self.enemies.add(new_snail)
 
                 enemy_hit = pygame.sprite.spritecollideany(self.player, self.enemies)
                 if enemy_hit:

@@ -194,3 +194,10 @@ A 0.0.0.1.8 ---- LOG
 Restructured Item object to more easily accomodate weapons and other subclasses of items. Fixed loading image locations to the Item object taking into account the item type.
 
 Added extendable functionality to pick up weapons. Next will be switching weapons. I'll need to add more weapons.
+
+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+A 0.0.0.1.9 ---- LOG 
+
+Added Magnum. Can swap items now. You can choose to pick up an item and you can carry up to 2 weapons. It works fucking flawlessly. Just as I was about to commit this update,
+I was able to call self.kill in the item update method so the swap works seamlessly

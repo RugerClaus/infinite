@@ -163,7 +163,7 @@ class Player(Entity):
 
             return {
                 "position": (nearest_enemy.rect.centerx, nearest_enemy.rect.midbottom[1]),
-                "type": nearest_enemy.type,
+                "type": nearest_enemy.name,
                 "relation_to_player": relation_to_player
             }
         

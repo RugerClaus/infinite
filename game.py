@@ -2,8 +2,7 @@ import pygame
 from player import Player
 from UI.debug import DebugMenu
 from UI.button import Button
-from enemy import Enemy
-from item import Item
+from enemy import *
 from weapon import *
 from UI.ui import UI
 
@@ -18,8 +17,8 @@ class Game():
         self.music_manager = music_manager
         self.player = Player(self.screen, self,music_manager)
         self.enemies = pygame.sprite.Group()
-        self.snail = Enemy(900,700,self,self.player,'snail')
         self.ui = UI(self)
+        self.debug = DebugMenu(self.screen,self.window,self)
         
 
 
@@ -30,7 +29,7 @@ class Game():
         self.items.add(LaserRifle(self))
         self.items.add(RedLaserRifle(self))
         self.items.add(Magnum(self))
-        self.debug = DebugMenu(self.screen,self.window,self)
+        self.enemies.add(Snail(self,self.player))
         self.background_x = 0 
         self.background_speed = 3
         self.background_scrolling = False
@@ -258,21 +257,6 @@ class Game():
                 # if not any(enemy.type == 'snail' for enemy in self.enemies):
                 #     new_snail = Enemy(900, 700, self, self.player, 'snail')
                 #     self.enemies.add(new_snail)
-
-                enemy_hit = pygame.sprite.spritecollideany(self.player, self.enemies)
-                if enemy_hit:
-                    self.player.health -= 1
-                    for enemy in self.enemies: self.enemies.remove(enemy)
-                    
-                    print(self.player.health)
-                else:
-                    for enemy in self.enemies:
-                        if self.player.rect.bottom < enemy.rect.top:
-                            self.enemy_jumped = True
-                            if self.player.rect.centerx > enemy.rect.right:
-                                self.player.passed_enemy = self.enemy_jumped
-                    if self.enemy_jumped and self.player.on_ground:
-                        self.enemy_jumped = False
                 
 
             if self.debug.on:

@@ -22,3 +22,7 @@ class Projectile(Entity):
         # Remove if off-screen
         if not self.game.screen.get_rect().colliderect(self.rect) or self.rect.bottom >= 700:
             self.kill()
+        for enemy in self.game.enemies:
+            if self.rect.colliderect(enemy.rect):
+                self.kill()
+                enemy.health -= 1

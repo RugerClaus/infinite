@@ -157,6 +157,7 @@ class Game():
 
                     # Update the UI prompt
                     self.ui.show_prompt(f"Swapped {current_weapon.canonical_name} for {item_hit.name}", item_hit.image, True)
+            self.music_manager.play_sfx(self.player.active_weapon.pickup_sound)
 
 
     def render_hotbar(self):
@@ -164,15 +165,11 @@ class Game():
         weapon_offset_x = 60 
         weapons = [self.player.inventory["primary"], self.player.inventory["secondary"]]
 
-        print(f"Active Weapon: {self.player.active_weapon}")
-        print(f"Primary Weapon: {self.player.inventory["primary"]}")
-        print(f"Secondary Weapon: {self.player.inventory["secondary"]}")
-
         for index, weapon in enumerate(weapons):
             if weapon:
                 weapon_x = hotbar_x + index * weapon_offset_x
                 weapon_rect = weapon.image_right.get_rect(topleft=(weapon_x, hotbar_y))
-                self.screen.blit(weapon.image_right, weapon_rect)
+                self.screen.blit(weapon.image_left, weapon_rect)
 
                 if self.player.active_weapon == weapon:
                     pygame.draw.rect(self.screen, (0, 0, 0), weapon_rect, 5)  # Highlight active weapon

@@ -84,4 +84,4 @@ class Magnum(Weapon):
         self.image = self.image_right if facing_right else self.image_left
 
     def use(self):
-        self.game.music_manager.play_sfx("plasma_rifle")
+        self.game.music_manager.play_sfx("magnum")

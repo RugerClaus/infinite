@@ -11,7 +11,8 @@ class SoundManager:
             "jump": 'audio/jump.mp3',
             "plasma_rifle": 'audio/weird_space_gun.wav',
             "non_mechanical_item" : 'audio/non_mechanical_weapon_pickup.wav',
-            "mechanical_item": "audio/mechanical_weapon_pickup.wav"
+            "mechanical_item": "audio/mechanical_weapon_pickup.wav",
+            "magnum": "audio/gunshot.mp3"
         }
         self.volume = volume
         self.music_active = True

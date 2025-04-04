@@ -201,3 +201,10 @@ A 0.0.0.1.9 ---- LOG
 
 Added Magnum. Can swap items now. You can choose to pick up an item and you can carry up to 2 weapons. It works fucking flawlessly. Just as I was about to commit this update,
 I was able to call self.kill in the item update method so the swap works seamlessly
+
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+A 0.0.0.1.95 ---- LOG
+
+Made it so every time you pick up a weapon or switch weapons it plays a sound corresponding to the type of weapon it is. Added gun sound. Began implementation of Projectiles
+and projectile logic

@@ -93,12 +93,11 @@ class Player(Entity):
                 rotated_weapon = pygame.transform.rotate(self.active_weapon.image, -angle + 180)
             weapon_rect = rotated_weapon.get_rect(center=(weapon_x + 15, weapon_y + 15))
             self.screen.blit(rotated_weapon, weapon_rect.topleft)
-        else:
-            print("No active weapon")
 
     def switch_weapons(self):
         if self.inventory["primary"] and self.inventory["secondary"]:
             self.active_weapon = self.inventory["primary"] if self.active_weapon == self.inventory["secondary"] else self.inventory["secondary"]
+            self.music_manager.play_sfx(self.active_weapon.pickup_sound)
             print(f"Switched to: {self.active_weapon.canonical_name}")
 
     def attack(self):

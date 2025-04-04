@@ -222,3 +222,13 @@ On to actual news:
 I was able implement projectiles. The next thing I'll do is create collision logic for enemies. Right now the bullet shoots close enough to the weapon center not to make a 
 difference or much of one, but still I'd like to track the barell of the weapon better. Not certain how to do that rn. need to create different bullets for different
 weapons. I'll probably get on that when I create the collision logic. Probably going to have to rework the entire system knowing my luck, but oh well
+
+-----------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+A 0.0.0.2.1
+
+Gun shooting and aiming works well. Need to set more attributes of the guns, and damage, but other than that, it's complete. Going to add shields
+for enemies and the player at some point. Will have to figure out enemy shooting mechanics, but first I'll just focus on the collision logic between the projectiles
+and enemies.
+
+Then I'll integrate throwables.

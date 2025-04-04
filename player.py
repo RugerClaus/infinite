@@ -72,6 +72,16 @@ class Player(Entity):
         if self.was_walking:
             self.walking = True
 
+    #some of that sexy trig
+    def rotate_gun_point(self,x, y, angle_deg):
+        angle_rad = math.radians(angle_deg)
+        cos_theta = math.cos(angle_rad)
+        sin_theta = math.sin(angle_rad)
+        return (
+            x * cos_theta - y * sin_theta,
+            x * sin_theta + y * cos_theta
+        )
+
     def draw(self):
         super().draw()
         if self.active_weapon:
@@ -84,7 +94,7 @@ class Player(Entity):
             self.active_weapon.update_image(facing_right)
 
             # Offset weapon relative to player
-            weapon_offset_x = 20 if facing_right else -20
+            weapon_offset_x = 40 if facing_right else -40
             weapon_offset_y = 10  # Adjust to fine-tune the height
 
             # Base weapon position (before rotation)
@@ -98,8 +108,20 @@ class Player(Entity):
             weapon_rect = rotated_weapon.get_rect(center=(weapon_x, weapon_y))
 
             # Update barrel position dynamically
-            self.active_weapon.barrel_x = weapon_rect.midright[0] if facing_right else weapon_rect.midleft[0]
-            self.active_weapon.barrel_y = weapon_rect.centery
+            if facing_right:
+                local_barrel_offset = (0, 0)  # pixels from center of weapon
+                angle_to_use = -angle
+            else:
+                local_barrel_offset = (0, 0)
+                angle_to_use = -angle + 180
+
+            # Rotate that offset by weapon angle
+            rotated_offset = self.rotate_gun_point(*local_barrel_offset, angle_to_use)
+
+            # Final barrel world position = weapon_rect center + rotated offset
+            self.active_weapon.barrel_x = weapon_rect.centerx + rotated_offset[0]
+            self.active_weapon.barrel_y = weapon_rect.centery + rotated_offset[1]
+
 
             # Draw weapon
             self.screen.blit(rotated_weapon, weapon_rect.topleft)

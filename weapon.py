@@ -4,7 +4,7 @@ import math
 from projectile import Projectile
 
 class Weapon(Item):
-    def __init__(self, x, y, name, game, damage,image_right,image_left):
+    def __init__(self, x, y, name, game, damage,image_right,image_left,bullet_speed):
         self.image_right = image_right
         self.image_left = image_left
         self.item_class = 'weapons'
@@ -13,10 +13,11 @@ class Weapon(Item):
         self.stack_size = 1
         self.damage = damage
         self.original_x = x
-        self.projectile_image = pygame.image.load('graphics/Items/weapons/bulletforgame.png').convert_alpha()
+        self.projectile_image = pygame.image.load(f'graphics/Items/weapons/bullet_for_{self.name}.png').convert_alpha()
         self.barrel_x = self.rect.right  # Default barrel position
         self.barrel_y = self.rect.centery
-        
+        self.bullet_speed = bullet_speed
+
 
     def use(self):
         self.game.music_manager.play_sfx(self.name)
@@ -27,37 +28,31 @@ class Weapon(Item):
         angle = math.degrees(math.atan2(dy, dx))
 
 
-        projectile = Projectile(self.barrel_x,self.barrel_y, angle, 3, 5, self.projectile_image, self.game)
+        projectile = Projectile(self.barrel_x,self.barrel_y, angle, self.bullet_speed, 5, self.projectile_image, self.game)
         self.game.projectiles.add(projectile)
         print(f"Firing from: ({self.barrel_x}, {self.barrel_y}) with angle: {angle}")
 
 
     def update_image(self, facing_right):
         self.image = self.image_right if facing_right else self.image_left
-
-        if facing_right:
-            self.game.player.active_weapon.barrel_x =self.rect.midright[0] - 5  # Adjust for accuracy
-        else:
-            self.game.player.active_weapon.barrel_x = self.rect.midleft[0] + 5   # Adjust for accuracy
-
-        self.barrel_y = self.rect.centery  # Keep barrel vertically aligned
+        # pygame.draw.line(self.game.screen, (0, 255, 0), (self.barrel_x, self.barrel_y), pygame.mouse.get_pos(), 1) #draws a line from the center of the gun to mousepos
 
 class LaserRifle(Weapon):
     def __init__(self, game):
         damage = 10
-        self.name = "plasma_rifle"
-        self.x = 800
+        self.name = "plasma_rifle_blue"
+        self.x = 500
         self.y = 700
         self.item_class = 'weapons'
         self.canonical_name = "Laser Rifle"
         self.pickup_sound = 'non_mechanical_item'
 
         # Set up the image and orientation
-        self.image_right = pygame.image.load(f"graphics/Items/weapons/plasma_rifle_right.png").convert_alpha()
-        self.image_left = pygame.image.load(f"graphics/Items/weapons/plasma_rifle_left.png").convert_alpha()
+        self.image_right = pygame.image.load(f"graphics/Items/weapons/plasma_rifle_blue_right.png").convert_alpha()
+        self.image_left = pygame.image.load(f"graphics/Items/weapons/plasma_rifle_blue_left.png").convert_alpha()
         self.image = self.image_right  # Default orientation
 
-        super().__init__(self.x, self.y, self.name, game, damage,self.image_right,self.image_left)
+        super().__init__(self.x, self.y, self.name, game, damage,self.image_right,self.image_left,5)
 
     def update(self):
         super().update()
@@ -71,19 +66,19 @@ class LaserRifle(Weapon):
 
 class RedLaserRifle(Weapon):
     def __init__(self, game):
-        self.name = 'red_plasma_rifle'
+        self.name = 'plasma_rifle_red'
         damage = 10
-        self.x = 900
+        self.x = 600
         self.y = 700
         self.item_class = 'weapons'
         self.canonical_name = "Red Laser Rifle"
         self.pickup_sound = 'non_mechanical_item'
         # Set up the image and orientation
-        self.image_right = pygame.image.load(f"graphics/Items/weapons/red_plasma_rifle_right.png").convert_alpha()
-        self.image_left = pygame.image.load(f"graphics/Items/weapons/red_plasma_rifle_left.png").convert_alpha()
+        self.image_right = pygame.image.load(f"graphics/Items/weapons/plasma_rifle_red_right.png").convert_alpha()
+        self.image_left = pygame.image.load(f"graphics/Items/weapons/plasma_rifle_red_left.png").convert_alpha()
         self.image = self.image_right  # Default orientation
 
-        super().__init__(self.x, self.y, self.name, game, damage,self.image_right,self.image_left)
+        super().__init__(self.x, self.y, self.name, game, damage,self.image_right,self.image_left,10)
     def update(self):
         super().update()
 
@@ -91,7 +86,6 @@ class RedLaserRifle(Weapon):
         super().update_image(facing_right)
 
     def use(self):
-        self.name = "plasma_rifle"
         super().use()
 
 class Magnum(Weapon):
@@ -99,7 +93,7 @@ class Magnum(Weapon):
         self.name = 'magnum'
         self.canonical_name = "Magnum"
         damage = 10
-        self.x = 1000
+        self.x = 700
         self.y = 700
         self.item_class = 'weapons'
         self.pickup_sound = 'mechanical_item'
@@ -107,7 +101,8 @@ class Magnum(Weapon):
         self.image_right = pygame.image.load(f"graphics/Items/weapons/magnum_right.png").convert_alpha()
         self.image_left = pygame.image.load(f"graphics/Items/weapons/magnum_left.png").convert_alpha()
         self.image = self.image_right  # Default orientation
-        super().__init__(self.x, self.y, self.name, game, damage,self.image_right,self.image_left)
+        self.bullet_speed = 10
+        super().__init__(self.x, self.y, self.name, game, damage,self.image_right,self.image_left,20)
 
     def update(self):
         super().update()

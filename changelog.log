@@ -208,3 +208,17 @@ A 0.0.0.1.95 ---- LOG
 
 Made it so every time you pick up a weapon or switch weapons it plays a sound corresponding to the type of weapon it is. Added gun sound. Began implementation of Projectiles
 and projectile logic
+
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+A 0.0.0.2.0
+
+Started working on this update on a linux box running python 3.10.12. That's fine in and of itself until I got a syntax error on line 44 of UI/debug.py. Now you'll see that 
+file was updated this version for the first time since version alpha 0.0.0.1.61. I went ahead for portability's sake and updated that line to use single quotes for accessing
+the dictionary for "nearest_enemy_data['relation_to_player'] so it works on the older version of python3. Not strictly necessary, but it's a change I figured I'd make. I have
+never actually run into a syntax error like that being between different versions, but it makes sense, and there's a first time for everything.
+
+On to actual news: 
+I was able implement projectiles. The next thing I'll do is create collision logic for enemies. Right now the bullet shoots close enough to the weapon center not to make a 
+difference or much of one, but still I'd like to track the barell of the weapon better. Not certain how to do that rn. need to create different bullets for different
+weapons. I'll probably get on that when I create the collision logic. Probably going to have to rework the entire system knowing my luck, but oh well

@@ -25,6 +25,7 @@ class Game():
 
 
         ###### ADD ITEMS TO GAME - NEED TO AUTOMATE THIS#####
+        self.projectiles = pygame.sprite.Group()
         self.items = pygame.sprite.Group()
         self.items.add(LaserRifle(self))
         self.items.add(RedLaserRifle(self))
@@ -106,6 +107,7 @@ class Game():
         self.screen.blit(sky_surface, (self.background_x, 400))
         self.screen.blit(sky_surface, (self.background_x + self.screen.get_width(), 400))
         ground_surface = pygame.image.load('graphics/ground.png').convert_alpha()
+        self.ground_rect = ground_surface.get_rect()
         self.screen.blit(ground_surface, (self.background_x, 700))
 
     # def handle_item_collection(self):
@@ -246,6 +248,8 @@ class Game():
                 
                 self.handle_item_collection()
                 self.render_hotbar()
+                self.projectiles.update()
+                self.projectiles.draw(self.screen)
                 nearest_enemy_data = self.player.get_nearest_enemy(self.enemies)
 
                 if self.debug.on:

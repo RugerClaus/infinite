@@ -1,5 +1,7 @@
 import pygame
 from item import Item
+import math
+from projectile import Projectile
 
 class Weapon(Item):
     def __init__(self, x, y, name, game, damage,image_right,image_left):
@@ -11,6 +13,34 @@ class Weapon(Item):
         self.stack_size = 1
         self.damage = damage
         self.original_x = x
+        self.projectile_image = pygame.image.load('graphics/Items/weapons/bulletforgame.png').convert_alpha()
+        self.barrel_x = self.rect.right  # Default barrel position
+        self.barrel_y = self.rect.centery
+        
+
+    def use(self):
+        self.game.music_manager.play_sfx(self.name)
+        mouse_x, mouse_y = pygame.mouse.get_pos()
+        dx = mouse_x - self.barrel_x
+        dy = mouse_y - self.barrel_y
+
+        angle = math.degrees(math.atan2(dy, dx))
+
+
+        projectile = Projectile(self.barrel_x,self.barrel_y, angle, 3, 5, self.projectile_image, self.game)
+        self.game.projectiles.add(projectile)
+        print(f"Firing from: ({self.barrel_x}, {self.barrel_y}) with angle: {angle}")
+
+
+    def update_image(self, facing_right):
+        self.image = self.image_right if facing_right else self.image_left
+
+        if facing_right:
+            self.game.player.active_weapon.barrel_x =self.rect.midright[0] - 5  # Adjust for accuracy
+        else:
+            self.game.player.active_weapon.barrel_x = self.rect.midleft[0] + 5   # Adjust for accuracy
+
+        self.barrel_y = self.rect.centery  # Keep barrel vertically aligned
 
 class LaserRifle(Weapon):
     def __init__(self, game):
@@ -33,10 +63,11 @@ class LaserRifle(Weapon):
         super().update()
 
     def update_image(self, facing_right):
-        self.image = self.image_right if facing_right else self.image_left
+        super().update_image(facing_right)
+            
 
     def use(self):
-        self.game.music_manager.play_sfx("plasma_rifle")
+        super().use()
 
 class RedLaserRifle(Weapon):
     def __init__(self, game):
@@ -57,10 +88,11 @@ class RedLaserRifle(Weapon):
         super().update()
 
     def update_image(self, facing_right):
-        self.image = self.image_right if facing_right else self.image_left
+        super().update_image(facing_right)
 
     def use(self):
-        self.game.music_manager.play_sfx("plasma_rifle")
+        self.name = "plasma_rifle"
+        super().use()
 
 class Magnum(Weapon):
     def __init__(self, game):
@@ -81,7 +113,7 @@ class Magnum(Weapon):
         super().update()
 
     def update_image(self, facing_right):
-        self.image = self.image_right if facing_right else self.image_left
-
+        super().update_image(facing_right)
+    
     def use(self):
-        self.game.music_manager.play_sfx("magnum")
+        super().use()

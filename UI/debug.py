@@ -41,8 +41,7 @@ class DebugMenu():
                     f"Nearest E dist: {(distance_x,distance_y)}", True, 'white'
                 )
                 self.enemy_relation_to_player_text = self.win.debug_font.render(
-                    f"Dir to E: {nearest_enemy_data["relation_to_player"]}",True,'white'
-                )
+                    f"Dir to E: {nearest_enemy_data['relation_to_player']}",True,'white')
             elif nearest_enemy_data == None:
                 self.nearest_enemy_text = self.win.debug_font.render(
                     "Nearest E dist: N/A", True, 'white'

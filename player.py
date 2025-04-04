@@ -80,19 +80,30 @@ class Player(Entity):
             dy = mouse_y - self.rect.centery
             angle = math.degrees(math.atan2(dy, dx))
 
-            facing_right = dx >= 0 and self.speed >= 0
+            facing_right = dx >= 0
             self.active_weapon.update_image(facing_right)
 
-            weapon_offset_x = 20 if facing_right else -60
-            weapon_offset_y = 0
+            # Offset weapon relative to player
+            weapon_offset_x = 20 if facing_right else -20
+            weapon_offset_y = 10  # Adjust to fine-tune the height
+
+            # Base weapon position (before rotation)
             weapon_x = self.rect.centerx + weapon_offset_x
             weapon_y = self.rect.centery + weapon_offset_y
-            if facing_right:
-                rotated_weapon = pygame.transform.rotate(self.active_weapon.image, -angle)
-            else:
-                rotated_weapon = pygame.transform.rotate(self.active_weapon.image, -angle + 180)
-            weapon_rect = rotated_weapon.get_rect(center=(weapon_x + 15, weapon_y + 15))
+
+            # Rotate weapon
+            rotated_weapon = pygame.transform.rotate(self.active_weapon.image, -angle if facing_right else -angle + 180)
+
+            # Correct the rect after rotation
+            weapon_rect = rotated_weapon.get_rect(center=(weapon_x, weapon_y))
+
+            # Update barrel position dynamically
+            self.active_weapon.barrel_x = weapon_rect.midright[0] if facing_right else weapon_rect.midleft[0]
+            self.active_weapon.barrel_y = weapon_rect.centery
+
+            # Draw weapon
             self.screen.blit(rotated_weapon, weapon_rect.topleft)
+
 
     def switch_weapons(self):
         if self.inventory["primary"] and self.inventory["secondary"]:

@@ -9,6 +9,7 @@ class Item(Entity):
         self.name = name
         self.world_x = x
         self.world_y = y
+        self.world = self.game.world
         self.original_x = x
         self.item_class = item_class
         self.is_in_hotbar = False
@@ -35,11 +36,9 @@ class Item(Entity):
     def update(self):
         super().update()
         if not self.collected:
-            if self.scrolls_with_background:
-                self.rect.x = self.original_x + self.game.background_x
-            else:
-                self.rect.x = self.world_x
-                self.rect.y = self.world_y
+            offset_x = self.world.background_x if self.scrolls_with_background else 0
+            self.rect.x = self.world_x + offset_x
+            self.rect.y = self.world_y
         else:
             self.collected = False
             self.kill()

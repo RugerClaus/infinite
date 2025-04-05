@@ -18,7 +18,7 @@ class Enemy(Entity):
 
     def update(self):
         super().update()
-        self.rect.x = self.world_x + self.game.background_x
+        self.rect.x = self.world_x + self.game.world.background_x
 
         if self.rect.bottom >= 701:
             self.rect.bottom = 700  # Ground level
@@ -57,7 +57,7 @@ class Snail(Enemy):
         super().__init__(x, 700, game, player)
 
         self.speed = 2
-        self.health = 3
+        self.health = 24
         self.damage = 1
         self.name = "snail"
 

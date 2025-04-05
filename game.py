@@ -5,6 +5,7 @@ from UI.button import Button
 from enemy import *
 from weapon import *
 from UI.ui import UI
+from world import World
 
 class Game():
     def __init__(self, game_active, screen, clock, window,music_manager):
@@ -15,6 +16,7 @@ class Game():
         self.window = window
         self.screen = screen
         self.music_manager = music_manager
+        self.world = World(self)
         self.player = Player(self.screen, self,music_manager)
         self.enemies = pygame.sprite.Group()
         self.ui = UI(self)
@@ -101,13 +103,8 @@ class Game():
             self.player.rect.x += self.player.speed
 
     def render_environment(self):
-        self.update_background_position()
-        sky_surface = pygame.image.load('graphics/Sky.png').convert_alpha()
-        self.screen.blit(sky_surface, (self.background_x, 400))
-        self.screen.blit(sky_surface, (self.background_x + self.screen.get_width(), 400))
-        ground_surface = pygame.image.load('graphics/ground.png').convert_alpha()
-        self.ground_rect = ground_surface.get_rect()
-        self.screen.blit(ground_surface, (self.background_x, 700))
+        self.world.update()
+        self.world.render()
 
     # def handle_item_collection(self):
     #     # Check if the player collides with any item
@@ -240,7 +237,7 @@ class Game():
                 self.handle_player_input()
                 self.items.update()
                 self.items.draw(self.screen)
-                self.player.update(self.items)
+                self.player.update()
                 self.player.draw()
                 self.enemies.update()
                 self.enemies.draw(self.screen)

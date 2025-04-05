@@ -24,5 +24,7 @@ class Projectile(Entity):
             self.kill()
         for enemy in self.game.enemies:
             if self.rect.colliderect(enemy.rect):
+                enemy.health -= self.damage
                 self.kill()
-                enemy.health -= 1
+                print(enemy.health)
+                

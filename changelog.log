@@ -239,3 +239,10 @@ A 0.0.0.2.2 ---- LOG
 
 Added enemy projectile collision that kills and disappears both the enemy and projectile upon collision. It'll need to be refined, but it works okay for taking less
 than 30 mins
+
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+A 0.0.0.2.3 ---- LOG
+
+Changed render environment method to the World class. The World object will control the level mechanics. Going to have to implement a save/checkpoint system at
+some point. One thing at a time. Going to integrate new worlds next. Going to edit them tonight. I believe I have enough files for a few maps.

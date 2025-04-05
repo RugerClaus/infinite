@@ -11,7 +11,7 @@ class Window():
         pygame.font.init()
         self.width = width
         self.height = height
-        self.version = "Alpha 0.0.0.2.2"
+        self.version = "Alpha 0.0.0.2.3"
         self.title = f"Into the SpaceHole Version {self.version}"
         pygame.display.set_caption(self.title)
         self.screen = pygame.display.set_mode((width, height))

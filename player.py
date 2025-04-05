@@ -2,7 +2,6 @@ import pygame
 import math
 from animate import Animation
 from entity import Entity
-from weapon import Weapon
 
 class Player(Entity):
     def __init__(self, screen, game, music_manager):
@@ -32,7 +31,7 @@ class Player(Entity):
         self.set_animation("jump_right", Animation([pygame.image.load("graphics/Player/jump.png").convert_alpha()], 10))
         self.set_animation("jump_left", Animation([pygame.image.load("graphics/Player/jump_back.png").convert_alpha()], 10))
 
-    def update(self, items_group):
+    def update(self):
         self.world_x = self.rect.centerx
         self.world_y = self.rect.bottom - 700
         super().update()
@@ -50,13 +49,13 @@ class Player(Entity):
             self.play_animation("idle")
 
         # Handle player movement & background scrolling
-        if self.rect.left < self.screen.get_width() // 2 or self.game.background_x in [0, -2900]:
+        if self.rect.left < self.screen.get_width() // 2 or self.game.world.background_x in [0, -2900]:
             self.rect.x += self.speed
         else:
             self.rect.x = self.screen.get_width() // 2
 
         # Prevent movement beyond boundaries
-        if self.rect.x <= 0 or (self.rect.x >= 1000 and self.game.background_x <= -3100):
+        if self.rect.x <= 0 or (self.rect.x >= 1000 and self.game.world.background_x <= -3100):
             self.speed = 0
 
     def jump(self):

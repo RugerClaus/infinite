@@ -253,3 +253,9 @@ A 0.0.0.2.31 ---- LOG
 
 Debug menu was crashing the game due to not being able to find the nearest enemy relation to player. Currently it's not doing it's proper job and showing if the
 player is level with the nearest enemy, but it doesn't crash and that's such a minor bug.
+
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+A 0.0.0.2.32 ---- LOG
+
+Not a real update. Just adding some more assets to the repo before I go to work and work on this there

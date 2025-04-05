@@ -150,14 +150,17 @@ class Player(Entity):
 
         if nearest_enemy:
             # Horizontal relation
-            relation_to_player[0] = "Left" if nearest_enemy.rect.centerx < self.rect.centerx else "Right"
+            if nearest_enemy.rect.centerx < self.rect.centerx:
+                relation_to_player[0] = "Left"
+            elif nearest_enemy.rect.centerx > self.rect.centerx:
+                relation_to_player[0] = "Right"
 
             # Vertical relation
             if nearest_enemy.rect.top < self.rect.bottom:
                 relation_to_player[1] = "Up"
             elif nearest_enemy.rect.bottom > self.rect.top:
                 relation_to_player[1] = "Down"
-            else:
+            elif nearest_enemy.rect.bottom == self.rect.bottom:
                 relation_to_player[1] = "Level"
 
             return {

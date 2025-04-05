@@ -233,6 +233,8 @@ class Game():
                     self.window.handle_ui_events(pause_buttons)
             else:
                 self.screen.fill((208, 244, 247))
+                if self.debug.on:
+                    self.debug.update(nearest_enemy_data)
                 self.render_environment()
                 self.handle_player_input()
                 self.items.update()
@@ -256,8 +258,7 @@ class Game():
                 #     self.enemies.add(new_snail)
                 
 
-            if self.debug.on:
-                self.debug.update(nearest_enemy_data)
+
 
             pygame.display.flip()
             self.clock.tick(60)

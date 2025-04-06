@@ -1,5 +1,5 @@
 import pygame
-from window import Window
+from core.window import Window
 print(f"Pygame Version: {pygame.__version__}")
 
 window = Window(1000, 800)

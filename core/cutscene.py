@@ -45,7 +45,7 @@ class Cutscene:
 
         for image in self.cutscene_images:
             start_time = pygame.time.get_ticks()
-            duration = 3000  # 3 seconds
+            duration = 5000  # 3 seconds
 
             while pygame.time.get_ticks() - start_time < duration:
                 for event in pygame.event.get():

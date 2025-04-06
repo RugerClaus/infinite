@@ -10,7 +10,7 @@ class Enemy(Entity):
         self.world_x = x
         self.world_y = y
         self.music_manager = game.music_manager
-        self.speed = 0 #will change back to 3 later when working on enemy logic. for now I'm not moving the enemy and am going to focus on item/inventory system
+        self.speed = 0 #the commen that was originally here is out of date as fuck the enemy class is never directly instantiated. no need to worry about the value
         self.animation = Animation(self.enemy_frames,10)
         self.image = self.enemy_frames[0]
         self.rect = self.image.get_rect(midbottom = (x,y))
@@ -43,9 +43,9 @@ class Enemy(Entity):
     def draw(self):
         super().draw()
 
-class Snail(Enemy):
+class Snail(Enemy): #this is a test enemy for basic weapon mechanics. feel free to set the health up to 1000 Maybe I'll make this a boss at the end of the first level for no fucking reason
     def __init__(self, game, player):
-        # Load snail animation frames
+
         x=2000
         self.enemy_frames = [
             pygame.image.load("graphics/snail/snail_1.png").convert_alpha(),
@@ -64,4 +64,3 @@ class Snail(Enemy):
         if self.health <= 0:
             print(f"Killed {self.name}")
             self.kill()
-        # Optional: Add snail-specific logic here (e.g., play squish sound on death)

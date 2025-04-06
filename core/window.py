@@ -4,12 +4,13 @@ from UI.button import Button
 from core.game import Game
 from sys import exit as ex
 from version import version
-
+from core.state import *
 
 class Window():
     def __init__(self, width, height):
         pygame.init()
         pygame.font.init()
+        self.state = State()
         self.width = width
         self.height = height
         self.version = version
@@ -24,11 +25,10 @@ class Window():
         self.button_font = pygame.font.Font('font/Roboto-Black.ttf', 30)
         self.button_fontgame_over_font = pygame.font.Font('font/gameover.ttf', 50)
         self.game_active = False
-        self.window_state = 'main_menu'
         self.music_manager = SoundManager()
     
     def render_main_menu(self):
-        self.window_state = 'main_menu'
+        self.state.set_state(APPSTATE.MAIN_MENU)
         button_unhovered_color = "orange"
         button_hovered_color = "white"
 
@@ -53,7 +53,7 @@ class Window():
         self.handle_ui_events([play_button, options_button, quit_button])
 
     def render_options_menu(self):
-        self.window_state = 'options_menu'
+        self.state.set_state(APPSTATE.OPTIONS_MENU)
         button_unhovered_color = "orange"
         button_hovered_color = "white"
 
@@ -115,7 +115,7 @@ class Window():
 
     def start_game(self):
         self.music_manager.stop_music()
-        self.window_state = 'in_game'
+        self.state.set_state(APPSTATE.PLAYING_GAME)
         game = Game(True,self.screen,self.clock,self,self.music_manager)
         game.game_loop()
 
@@ -127,12 +127,12 @@ class Window():
     def main_loop(self):
         while self.running:
 
-            if self.window_state == "main_menu":
+            if self.state.is_state(APPSTATE.MAIN_MENU):
                 self.render_main_menu()
                 self.music_manager.play_music('menu')
-            elif self.window_state == 'options_menu':
+            elif self.state.is_state(APPSTATE.OPTIONS_MENU):
                 self.render_options_menu()
-            elif self.window_state == "in_game":
+            elif self.state.is_state(APPSTATE.PLAYING_GAME):
                 self.start_game()
 
             self.clock.tick(60)

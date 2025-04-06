@@ -267,3 +267,17 @@ A 0.0.0.2.4 ---- LOG
 Added basic cutscene functionality and started an opening scene. Was going to implement parallax, but I have zero idea how to make that work well yet, so gonna try
 it on a side project before bringing anything into this implementation. Created new background and ground for the game to get the mood of the first level (ice level)
 going!
+
+------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+A 0.0.0.2.5 ---- LOG
+
+Cutscene functionality is perfected in its current state, but I will be adding a file for cutscenes. I'm pretty sure these aren't going to be cutscenes for a bit.
+Pretty much just title cards for showing chapter titles (level changes). Speaking of states, most of the game operates on a state machine now, which is managed in
+~/core/state.py. 
+
+I didn't even notate in my last update how the directory structure has completely shifted. I now have several directories handling the game, and the entrance file
+remains main.py in the root folder of the application. So yeah, directory structure overhauled. I've been meaning to do that for a while now. Just couldn't figure out
+a good way to do it. Needed more code to justify it. Also the version for the Window object is stored in version.py which is also kept in the root folder.
+
+I plan tomorrow to work on integrating more worlds and then starting on some serious level design.

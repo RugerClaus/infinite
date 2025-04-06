@@ -7,10 +7,12 @@ from entities.weapon import *
 from UI.ui import UI
 from core.world import World
 from core.cutscene import Cutscene
+from core.state import *
 
 class Game():
     def __init__(self, game_active, screen, clock, window,music_manager):
         self.paused = False
+        self.state = State()
         self.game_active = game_active
         self.pause_button_font = pygame.font.Font('font/Pixeltype.ttf', 40)
         self.clock = clock
@@ -38,13 +40,6 @@ class Game():
         self.items.add(Magnum(self))
         self.enemies.add(Snail(self,self.player))
         self.enemy_jumped = False
-        self.check_state()
-
-    def check_state(self):
-        if self.game_active:
-            self.game_loop()
-        else:
-            self.window.render_main_menu()
 
     def exit(self):
         self.window.quit_game()
@@ -82,7 +77,7 @@ class Game():
         self.music_manager.stop_music()
         self.paused = False
         self.game_active = False
-        self.window.window_state = 'main_menu'
+        self.state.set_state(APPSTATE.MAIN_MENU)
 
     def update_pause_state(self):
         self.paused = not self.paused
